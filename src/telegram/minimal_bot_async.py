@@ -94,7 +94,21 @@ async def main():
     await app.updater.start_polling()
     
     try:
-        await app.updater.idle()
+        # Use different method for idle (API compatibility)
+        import signal
+        import asyncio
+        
+        stop_signals = (signal.SIGTERM, signal.SIGINT)
+        loop = asyncio.get_running_loop()
+        
+        for sig in stop_signals:
+            loop.add_signal_handler(sig, lambda: None)
+        
+        # Keep running until interrupted
+        await asyncio.Event().wait()
+        
+    except KeyboardInterrupt:
+        print("\n⏹️ Stopping...")
     finally:
         # Proper shutdown sequence
         await app.updater.stop()

@@ -408,20 +408,42 @@ console.cloud.google.com
             BotCommand("help", "❓ Bantuan")
         ]
         
+        # Initialize and start with proper async sequence
+        await self.app.initialize()
+        await self.app.start()
+        
         try:
             await self.app.bot.set_my_commands(commands)
             
             print("✅ Termux Bot Ready!")
             print("📱 Kirim /start ke bot Telegram Anda")
             
-            # Very simple polling - let it handle its own cleanup
-            await self.app.run_polling()
+            # Proper async polling sequence
+            await self.app.updater.start_polling()
+            
+            # Keep running
+            import signal
+            stop_signals = (signal.SIGTERM, signal.SIGINT)
+            loop = asyncio.get_running_loop()
+            
+            for sig in stop_signals:
+                loop.add_signal_handler(sig, lambda: None)
+            
+            await asyncio.Event().wait()
             
         except KeyboardInterrupt:
             print("\n⏹️ Bot stopped by user")
         except Exception as e:
             logger.error(f"Error in bot: {e}")
             print(f"❌ Error: {e}")
+        finally:
+            # Proper shutdown
+            try:
+                await self.app.updater.stop()
+                await self.app.stop()
+                await self.app.shutdown()
+            except:
+                pass
     
     def _setup_termux_handlers(self):
         """⚙️ Setup handlers untuk Termux"""
