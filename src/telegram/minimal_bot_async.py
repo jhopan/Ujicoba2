@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-🚀 MINIMAL TELEGRAM BOT
-📱 Super simple version without complex error handling
+🚀 MINIMAL TELEGRAM BOT - FULL ASYNC VERSION  
+📱 Proper async pattern dengan semua await
 """
 
 import os
@@ -28,7 +28,6 @@ env_file = PROJECT_ROOT / ".env"
 
 if not env_file.exists():
     print("❌ .env file not found")
-    print("📝 Create .env with TELEGRAM_BOT_TOKEN and ALLOWED_USER_IDS")
     exit(1)
 
 # Read config
@@ -55,15 +54,10 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     welcome_text = """
-🤖 **TERMUX BACKUP BOT**
+🤖 **TERMUX BACKUP BOT (Async)**
 ✅ Bot berhasil terhubung!
 
-🎯 **Available Commands:**
-/start - Show this message
-/status - Show bot status
-/help - Show help
-
-📱 Bot ready for Android backup!
+📱 Full async version dengan proper await!
     """
     
     await update.message.reply_text(welcome_text)
@@ -76,37 +70,11 @@ async def status_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Access denied")
         return
     
-    await update.message.reply_text("✅ Bot is running normally!")
+    await update.message.reply_text("✅ Async bot running perfectly!")
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Show help"""
-    user_id = str(update.effective_user.id)
-    
-    if user_id != ALLOWED_USER:
-        await update.message.reply_text("❌ Access denied")
-        return
-    
-    help_text = """
-🆘 **HELP**
-
-📋 **Commands:**
-/start - Main menu
-/status - Check bot status  
-/help - This help message
-
-🚀 **Next Steps:**
-1. Send /start to begin
-2. Set up Google Drive credentials
-3. Configure backup folders
-
-🤖 Bot is ready!
-    """
-    
-    await update.message.reply_text(help_text)
-
-def main():
-    """Main bot function - sync version"""
-    print("🤖 Starting Minimal Telegram Bot...")
+async def main():
+    """Full async main with proper await sequence"""
+    print("🤖 Starting Full Async Bot...")
     print(f"🔑 Token: {TOKEN[:10]}...")
     print(f"👤 Allowed User: {ALLOWED_USER}")
     
@@ -116,18 +84,27 @@ def main():
     # Add handlers
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("status", status_command))
-    app.add_handler(CommandHandler("help", help_command))
     
     print("✅ Bot Ready!")
     print("📱 Send /start to your bot")
     
-    # Let PTB handle event loop completely
-    app.run_polling(close_loop=True)
+    # PROPER async sequence - all methods awaited
+    await app.initialize()
+    await app.start()
+    await app.updater.start_polling()
+    
+    try:
+        await app.updater.idle()
+    finally:
+        # Proper shutdown sequence
+        await app.updater.stop()
+        await app.stop()
+        await app.shutdown()
 
 if __name__ == "__main__":
     try:
-        main()  # NO asyncio.run() here!
+        asyncio.run(main())  # OK to use asyncio.run with full async pattern
     except KeyboardInterrupt:
-        print("\n⏹️ Bot stopped")
+        print("\n⏹️ Async bot stopped")
     except Exception as e:
         print(f"❌ Error: {e}")
