@@ -24,8 +24,24 @@ termux-setup-storage
 sleep 3
 
 echo ""
-echo "📦 Step 4: Install Python Packages (using existing pip)..."
-# Termux sudah include pip, jangan install ulang
+echo "📦 Step 4: Install Python Packages..."
+
+# Check dan install pip jika diperlukan
+if ! command -v pip &> /dev/null && ! command -v pip3 &> /dev/null; then
+    echo "📦 Installing pip..."
+    pkg install python-pip -y
+    # Fallback if python-pip package doesn't exist
+    if ! command -v pip &> /dev/null; then
+        echo "🔄 Installing pip via ensurepip..."
+        python -m ensurepip --upgrade 2>/dev/null || echo "⚠️ Using existing pip setup"
+    fi
+else
+    echo "✅ pip already available"
+fi
+
+# Update pip to latest version
+echo "🔄 Updating pip..."
+pip install --upgrade pip 2>/dev/null || python -m pip install --upgrade pip 2>/dev/null || echo "⚠️ pip update skipped"
 
 echo "🤖 Installing Telegram Bot..."
 pip install python-telegram-bot>=20.0

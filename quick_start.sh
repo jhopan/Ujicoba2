@@ -35,6 +35,12 @@ if ! command -v python &> /dev/null && ! command -v python3 &> /dev/null; then
     pkg install python -y
 fi
 
+# Install pip if needed
+if ! command -v pip &> /dev/null && ! command -v pip3 &> /dev/null; then
+    echo "📦 Installing pip..."
+    pkg install python-pip -y
+fi
+
 echo "✅ Environment ready"
 echo ""
 

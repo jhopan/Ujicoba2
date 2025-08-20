@@ -9,6 +9,7 @@ import sys
 import json
 import asyncio
 import logging
+import signal
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional
@@ -164,11 +165,17 @@ PLATFORM=termux
             print(f"📱 Buka Telegram, kirim /start ke bot Anda")
             print(f"⏳ Waiting for Google Drive credentials...")
             
-            await self.app.run_polling()
+            await self.app.run_polling(stop_signals=None)
             
         except Exception as e:
             logger.error(f"Error: {e}")
             print(f"❌ Error: {e}")
+        finally:
+            if self.app:
+                try:
+                    await self.app.shutdown()
+                except:
+                    pass
     
     async def _setup_start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """🎯 Setup start handler"""
@@ -365,8 +372,12 @@ console.cloud.google.com
     
     async def _restart_to_normal(self):
         """🔄 Restart ke normal mode"""
-        if self.app and self.app.running:
-            await self.app.stop()
+        try:
+            if self.app and self.app.running:
+                await self.app.stop()
+                await self.app.shutdown()
+        except Exception as e:
+            logger.warning(f"Shutdown warning: {e}")
         
         await asyncio.sleep(2)
         await self._run_termux_bot()
@@ -403,12 +414,23 @@ console.cloud.google.com
             BotCommand("help", "❓ Bantuan")
         ]
         
-        await self.app.bot.set_my_commands(commands)
-        
-        print("✅ Termux Bot Ready!")
-        print("📱 Kirim /start ke bot Telegram Anda")
-        
-        await self.app.run_polling()
+        try:
+            await self.app.bot.set_my_commands(commands)
+            
+            print("✅ Termux Bot Ready!")
+            print("📱 Kirim /start ke bot Telegram Anda")
+            
+            await self.app.run_polling(stop_signals=None)
+            
+        except Exception as e:
+            logger.error(f"Error in bot: {e}")
+            print(f"❌ Error: {e}")
+        finally:
+            if self.app:
+                try:
+                    await self.app.shutdown()
+                except:
+                    pass
     
     def _setup_termux_handlers(self):
         """⚙️ Setup handlers untuk Termux"""
@@ -872,6 +894,21 @@ console.cloud.google.com
 
 async def main():
     """🚀 Main function untuk Termux"""
+    bot = None
+    
+    def signal_handler(sig, frame):
+        """Handle Ctrl+C gracefully"""
+        print("\n⏹️ Stopping bot...")
+        if bot and bot.app:
+            try:
+                asyncio.create_task(bot.app.stop())
+            except:
+                pass
+        sys.exit(0)
+    
+    # Setup signal handler
+    signal.signal(signal.SIGINT, signal_handler)
+    
     try:
         if not TELEGRAM_AVAILABLE:
             print("❌ Telegram library not available")
@@ -884,10 +921,16 @@ async def main():
         await bot.auto_start()
         
     except KeyboardInterrupt:
-        print("\n⏹️ Bot stopped")
+        print("\n⏹️ Bot stopped by user")
     except Exception as e:
         logger.error(f"Fatal error: {e}")
         print(f"❌ Error: {e}")
+    finally:
+        if bot and bot.app:
+            try:
+                await bot.app.shutdown()
+            except:
+                pass
 
 if __name__ == "__main__":
     print("🤖 Termux Backup System - Telegram Bot")
@@ -895,6 +938,12 @@ if __name__ == "__main__":
     print("="*50)
     
     try:
+        if sys.platform.startswith('win'):
+            # Windows compatibility
+            asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+        
         asyncio.run(main())
     except KeyboardInterrupt:
         print("\n👋 Goodbye!")
+    except Exception as e:
+        print(f"❌ Final error: {e}")

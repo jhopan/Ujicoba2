@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.0.1] - 2025-08-21
+
+### 🐛 Bug Fixes
+- **🔧 Event Loop Error Fixed** - Resolved "Cannot close a running event loop" error
+- **📦 pip Installation** - Added pip installation check in all setup scripts
+- **⚡ Signal Handling** - Improved Ctrl+C handling for graceful shutdown
+- **🔄 Bot Restart Logic** - Fixed bot restart mechanism to prevent conflicts
+
+### ✨ New Features
+- **🚨 Emergency Restart Script** - `scripts/emergency_restart.sh` for stuck processes
+- **📦 pip Setup Helper** - `scripts/setup_pip.sh` for pip installation issues
+- **🔍 Debug Information Tool** - `scripts/debug_info.sh` for troubleshooting
+- **📚 Troubleshooting Guide** - Comprehensive `docs/TROUBLESHOOTING.md`
+
+### 🔧 Improvements
+- **🛡️ Better Error Handling** - More robust exception handling in bot
+- **⚙️ Enhanced Setup Scripts** - All scripts now check and install pip
+- **🎯 Windows Compatibility** - Added Windows event loop policy support
+- **📝 Better Logging** - Improved error messages and logging
+
+### 📝 Documentation
+- **🆘 TROUBLESHOOTING.md** - Complete guide for common issues
+- **🔧 Emergency procedures** - Quick fixes for stuck processes
+- **📋 Debug collection** - System info gathering for support
+
+---
+
 ## [1.0.0] - 2025-08-20
 
 ### ✨ Fitur Baru
