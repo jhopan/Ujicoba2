@@ -3,37 +3,75 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Telegram Bot](https://img.shields.io/badge/Telegram-Bot%20Ready-blue.svg)](https://core.telegram.org/bots)
+[![GitHub release](https://img.shields.io/github/v/release/jhopan/BackupHpDriveOtomatis-Termux)](https://github.com/jhopan/BackupHpDriveOtomatis-Termux/releases)
 
 **🤖 Sistem backup otomatis HP Android ke Google Drive dengan interface Telegram yang sangat user-friendly**
 
-## ✨ Fitur Utama
+## ⭐ Highlights
 
-- 🤖 **Telegram Bot Interface** - Control via chat dengan button navigation
-- ☁️ **Unlimited Google Drive** - Multiple accounts support (15GB per akun)
-- 📱 **Termux Optimized** - Khusus untuk Android Termux environment
-- 🔄 **Auto Backup** - Scheduled & manual backup options
-- 🗑️ **Smart Auto-Delete** - Toggle on/off hapus file setelah upload
-- 📁 **Flexible Folders** - Backup folder apapun dengan 1-click setup
-- 🎯 **User-Friendly UI** - Click-click interface, tidak perlu hafal command
+- 🎯 **Super User-Friendly** - Click-click interface, tidak perlu hafal command
+- ☁️ **Unlimited Storage** - Support multiple Google Drive accounts (15GB per akun)
+- 📱 **Termux Optimized** - Khusus untuk Android, tidak perlu root
+- �️ **Smart Auto-Delete** - Toggle hapus file setelah backup sukses
+- � **One-Command Install** - Setup dalam 2 menit
 
-## 🚀 Quick Start
+## 🎯 Siapa yang Perlu Tool Ini?
 
-### 1. Clone & Install
+✅ **Pengguna Android** yang ingin backup file otomatis  
+✅ **User Termux** yang butuh solusi backup simpel  
+✅ **Yang punya banyak file** di HP dan butuh storage unlimited  
+✅ **Yang males ribet** - tinggal click button aja  
+✅ **Yang butuh auto-delete** untuk hemat storage HP  
+
+## 📱 Demo Interface Bot
+
+```
+🤖 BACKUP HP KE DRIVE OTOMATIS
+📱 Backup Android dengan Storage Unlimited
+
+👤 User: Anda
+📊 Status: ✅ Siap Backup
+🗃️ Akun: 3 Google Drive (45GB total)
+📁 Folder: 8 dipantau
+
+🎯 Menu Utama:
+
+[🚀 Backup Cepat] [⏸️ Stop]
+[👥 Kelola Akun Drive] [📁 Pilih Folder]
+[🗑️ Auto-Delete: ON] [📊 Status Sistem]
+[💾 Backup Manual] [⏰ Jadwal Otomatis]
+```
+
+## � Instalasi Super Cepat
+
+### Method 1: Auto Install (Recommended)
 ```bash
-# Clone repository
+# Clone & auto install
 git clone https://github.com/jhopan/BackupHpDriveOtomatis-Termux.git
 cd BackupHpDriveOtomatis-Termux
-
-# Auto install (recommended)
 chmod +x quick_start.sh
 ./quick_start.sh
 ```
 
-### 2. Setup Bot
-1. **Buat Telegram Bot** - Message @BotFather
-2. **Dapatkan User ID** - Message @userinfobot  
-3. **Setup Google Drive** - Upload credentials via bot
-4. **Mulai Backup** - Click "🚀 Quick Backup"
+### Method 2: Manual Install
+```bash
+# Install dependencies
+pkg update && pkg upgrade -y
+pkg install python python-pip git -y
+
+# Clone repository  
+git clone https://github.com/jhopan/BackupHpDriveOtomatis-Termux.git
+cd BackupHpDriveOtomatis-Termux
+
+# Install packages
+pip install -r requirements.txt
+
+# Setup storage
+termux-setup-storage
+
+# Start bot
+python main.py
+```
 
 ## 📱 Interface Bot Telegram
 
