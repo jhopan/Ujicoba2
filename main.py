@@ -58,18 +58,43 @@ def check_requirements():
 async def start_termux_bot():
     """Start the Termux-optimized bot"""
     try:
-        from telegram.termux_telegram_bot import TermuxTelegramBot
+        # Try to import the termux bot first
+        try:
+            from src.telegram.termux_telegram_bot import TermuxTelegramBot
+            
+            print("🤖 Starting Termux Telegram Bot...")
+            bot = TermuxTelegramBot()
+            await bot.auto_start()
+            return True
+            
+        except ImportError:
+            # Fallback to any available bot
+            print("🔄 Termux bot not found, trying alternatives...")
+            
+            # Check what bots are available
+            import os
+            telegram_dir = PROJECT_ROOT / "src" / "telegram"
+            if telegram_dir.exists():
+                bot_files = list(telegram_dir.glob("*bot.py"))
+                print(f"📁 Available bots: {[f.name for f in bot_files]}")
+                
+                # Try to run any available bot
+                for bot_file in bot_files:
+                    if "termux" in bot_file.name:
+                        print(f"🚀 Starting {bot_file.name}...")
+                        # Run the bot file directly
+                        import subprocess
+                        result = subprocess.run([
+                            "python3", str(bot_file)
+                        ], cwd=str(PROJECT_ROOT))
+                        return result.returncode == 0
+            
+            print("❌ No suitable bot found")
+            return False
         
-        print("🤖 Starting Termux Telegram Bot...")
-        bot = TermuxTelegramBot()
-        await bot.auto_start()
-        
-    except ImportError:
-        print("❌ Termux bot not available")
-        print("📁 Check: src/telegram/termux_telegram_bot.py")
-        return False
     except Exception as e:
         print(f"❌ Error starting bot: {e}")
+        print("💡 Try: python src/telegram/termux_telegram_bot.py")
         return False
 
 async def start_generic_bot():

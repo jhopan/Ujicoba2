@@ -98,39 +98,105 @@ echo "2️⃣  Get User ID:"
 echo "   - Message @userinfobot"
 echo "   - Copy your user ID"
 echo ""
-echo "3️⃣  Start Bot:"
-echo "   ./scripts/start_bot.sh"
-echo "   OR"
-echo "   python main.py"
-echo ""
-echo "4️⃣  Setup via Bot:"
-echo "   - Send /start to your bot"
-echo "   - Follow setup wizard"
-echo "   - Upload Google Drive credentials"
-echo ""
-echo "🚀 Quick start commands:"
-echo "   chmod +x scripts/start_bot.sh"
-echo "   ./scripts/start_bot.sh"
+echo "=========================================="
+echo "🔧 INTERACTIVE BOT SETUP"
+echo "=========================================="
 echo ""
 
-# Ask if want to start now
-read -p "🤖 Start bot now? (y/n): " start_now
-
-if [[ "$start_now" == "y" ]]; then
+# Check if .env already configured
+if [ ! -f ".env" ] || ! grep -q "TELEGRAM_BOT_TOKEN=" .env || grep -q "your_bot_token" .env; then
+    echo "📋 STEP 3: Create Telegram Bot"
+    echo "1. Buka Telegram, cari @BotFather"
+    echo "2. Kirim: /newbot"
+    echo "3. Ikuti instruksi untuk buat bot"
+    echo "4. Copy token yang diberikan"
     echo ""
-    echo "🚀 Starting bot..."
     
-    if [ -f "scripts/start_bot.sh" ]; then
-        chmod +x scripts/start_bot.sh
-        ./scripts/start_bot.sh
-    elif [ -f "main.py" ]; then
-        python main.py
-    else
-        echo "❌ No startup script found"
-        echo "💡 Run: python src/telegram/termux_telegram_bot.py"
-    fi
-else
+    # Ask for bot token
+    while true; do
+        read -p "🔑 Paste Bot Token di sini: " BOT_TOKEN
+        if [[ "$BOT_TOKEN" =~ ^[0-9]+:[A-Za-z0-9_-]+$ ]]; then
+            break
+        else
+            echo "❌ Format token tidak valid. Coba lagi."
+            echo "💡 Format: 123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
+        fi
+    done
+    
     echo ""
-    echo "👋 Setup complete! Run the bot when ready:"
-    echo "   ./scripts/start_bot.sh"
+    echo "� STEP 4: Get User ID"
+    echo "1. Buka Telegram, cari @userinfobot"
+    echo "2. Kirim: /start"
+    echo "3. Copy User ID yang diberikan (angka saja)"
+    echo ""
+    
+    # Ask for user ID
+    while true; do
+        read -p "👤 Paste User ID di sini: " USER_ID
+        if [[ "$USER_ID" =~ ^[0-9]+$ ]]; then
+            break
+        else
+            echo "❌ User ID harus berupa angka saja. Coba lagi."
+        fi
+    done
+    
+    # Create .env file
+    echo "💾 Menyimpan konfigurasi..."
+    cat > .env << EOF
+# 🤖 BackupHpDriveOtomatis-Termux Configuration
+# Generated: $(date)
+
+# Telegram Bot
+TELEGRAM_BOT_TOKEN=$BOT_TOKEN
+ALLOWED_USER_IDS=$USER_ID
+
+# Backup Settings
+AUTO_DELETE_AFTER_UPLOAD=false
+MAX_FILE_SIZE=104857600
+ORGANIZE_BY_DATE=true
+
+# Google Drive
+UNLIMITED_ACCOUNTS=true
+MAX_ACCOUNTS=20
+
+# Setup Status
+SETUP_COMPLETED=true
+PLATFORM=termux
+EOF
+    
+    echo "✅ Konfigurasi tersimpan!"
+else
+    echo "✅ Bot sudah dikonfigurasi sebelumnya"
+fi
+
+echo ""
+echo "=========================================="
+echo "🚀 STARTING BOT"
+echo "=========================================="
+echo ""
+echo "💡 Bot akan start sekarang..."
+echo "📱 Buka Telegram dan kirim /start ke bot Anda"
+echo "⚠️  Press Ctrl+C untuk stop bot"
+echo ""
+
+# Countdown
+for i in {3..1}; do
+    echo -ne "⏰ Starting in $i seconds... \r"
+    sleep 1
+done
+
+echo ""
+echo "🚀 Starting bot..."
+
+if [ -f "scripts/start_bot.sh" ]; then
+    chmod +x scripts/start_bot.sh
+    ./scripts/start_bot.sh
+elif [ -f "run_bot.sh" ]; then
+    chmod +x run_bot.sh
+    ./run_bot.sh
+elif [ -f "main.py" ]; then
+    python main.py
+else
+    echo "❌ No startup script found"
+    echo "💡 Run: python src/telegram/termux_telegram_bot.py"
 fi

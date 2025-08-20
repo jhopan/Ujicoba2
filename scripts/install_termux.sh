@@ -1,12 +1,12 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# 🚀 Ultimate Backup System - Termux Auto Installer
-# 📱 Khusus untuk Android Termux
+# 🚀 BackupHpDriveOtomatis-Termux - Auto Installer
+# 📱 Khusus untuk Android Termux (Fixed pip issue)
 # ⚡ One-command installation
 
 echo "🚀========================================"
-echo "🤖 ULTIMATE BACKUP SYSTEM - TERMUX"
-echo "📱 Auto installer untuk Android"
+echo "🤖 BACKUP HP KE DRIVE OTOMATIS"
+echo "📱 Auto installer untuk Android Termux"
 echo "========================================"
 
 echo ""
@@ -15,7 +15,7 @@ pkg update -y && pkg upgrade -y
 
 echo ""
 echo "🐍 Step 2: Install Python & Tools..."
-pkg install -y python python-pip git curl wget openssh libffi openssl libjpeg-turbo libcrypt nano which tree htop
+pkg install -y python git curl wget openssh libffi openssl libjpeg-turbo libcrypt nano which tree htop
 
 echo ""
 echo "📁 Step 3: Setup Storage Access..."
@@ -24,8 +24,8 @@ termux-setup-storage
 sleep 3
 
 echo ""
-echo "📦 Step 4: Install Python Packages..."
-pip install --upgrade pip
+echo "📦 Step 4: Install Python Packages (using existing pip)..."
+# Termux sudah include pip, jangan install ulang
 
 echo "🤖 Installing Telegram Bot..."
 pip install python-telegram-bot>=20.0
@@ -34,7 +34,7 @@ echo "☁️ Installing Google Drive API..."
 pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib google-auth
 
 echo "🔄 Installing Async Operations..."
-pip install aiofiles aiohttp asyncio-throttle
+pip install aiofiles aiohttp
 
 echo "⚙️ Installing Configuration Tools..."
 pip install python-dotenv pyyaml
@@ -42,11 +42,8 @@ pip install python-dotenv pyyaml
 echo "🌐 Installing Network Tools..."
 pip install requests urllib3 certifi
 
-echo "📅 Installing Date/Time Tools..."
-pip install python-dateutil
-
-echo "📝 Installing Logging..."
-pip install colorlog
+echo "📅 Installing Additional Tools..."
+pip install python-dateutil schedule psutil
 
 echo "🖼️ Installing File Processing..."
 pip install Pillow
