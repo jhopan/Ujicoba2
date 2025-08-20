@@ -372,13 +372,7 @@ console.cloud.google.com
     
     async def _restart_to_normal(self):
         """🔄 Restart ke normal mode"""
-        try:
-            if self.app and self.app.running:
-                await self.app.stop()
-                await self.app.shutdown()
-        except Exception as e:
-            logger.warning(f"Shutdown warning: {e}")
-        
+        print("🔄 Restarting to normal mode...")
         await asyncio.sleep(2)
         await self._run_termux_bot()
     
@@ -420,7 +414,7 @@ console.cloud.google.com
             print("✅ Termux Bot Ready!")
             print("📱 Kirim /start ke bot Telegram Anda")
             
-            # Simple polling without complex signal handling
+            # Very simple polling - let it handle its own cleanup
             await self.app.run_polling()
             
         except KeyboardInterrupt:
@@ -428,13 +422,6 @@ console.cloud.google.com
         except Exception as e:
             logger.error(f"Error in bot: {e}")
             print(f"❌ Error: {e}")
-        finally:
-            # Simple cleanup without await
-            if self.app:
-                try:
-                    self.app.stop()
-                except:
-                    pass
     
     def _setup_termux_handlers(self):
         """⚙️ Setup handlers untuk Termux"""
