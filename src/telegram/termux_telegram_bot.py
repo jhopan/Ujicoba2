@@ -420,15 +420,19 @@ console.cloud.google.com
             print("✅ Termux Bot Ready!")
             print("📱 Kirim /start ke bot Telegram Anda")
             
-            await self.app.run_polling(stop_signals=None)
+            # Simple polling without complex signal handling
+            await self.app.run_polling()
             
+        except KeyboardInterrupt:
+            print("\n⏹️ Bot stopped by user")
         except Exception as e:
             logger.error(f"Error in bot: {e}")
             print(f"❌ Error: {e}")
         finally:
+            # Simple cleanup without await
             if self.app:
                 try:
-                    await self.app.shutdown()
+                    self.app.stop()
                 except:
                     pass
     
@@ -894,21 +898,6 @@ console.cloud.google.com
 
 async def main():
     """🚀 Main function untuk Termux"""
-    bot = None
-    
-    def signal_handler(sig, frame):
-        """Handle Ctrl+C gracefully"""
-        print("\n⏹️ Stopping bot...")
-        if bot and bot.app:
-            try:
-                asyncio.create_task(bot.app.stop())
-            except:
-                pass
-        sys.exit(0)
-    
-    # Setup signal handler
-    signal.signal(signal.SIGINT, signal_handler)
-    
     try:
         if not TELEGRAM_AVAILABLE:
             print("❌ Telegram library not available")
@@ -925,12 +914,6 @@ async def main():
     except Exception as e:
         logger.error(f"Fatal error: {e}")
         print(f"❌ Error: {e}")
-    finally:
-        if bot and bot.app:
-            try:
-                await bot.app.shutdown()
-            except:
-                pass
 
 if __name__ == "__main__":
     print("🤖 Termux Backup System - Telegram Bot")
@@ -938,10 +921,7 @@ if __name__ == "__main__":
     print("="*50)
     
     try:
-        if sys.platform.startswith('win'):
-            # Windows compatibility
-            asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-        
+        # Simple asyncio run without complex policies
         asyncio.run(main())
     except KeyboardInterrupt:
         print("\n👋 Goodbye!")
