@@ -1,0 +1,6 @@
+# Temporary files directory
+# File temporary akan dibuat dan dihapus otomatis oleh sistem
+
+*.tmp
+*.temp
+*.zip

@@ -1,0 +1,5 @@
+# Logs directory
+# File log akan dibuat otomatis oleh sistem
+
+*.log
+*.log.*

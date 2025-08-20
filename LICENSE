@@ -1,0 +1,63 @@
+MIT License
+
+Copyright (c) 2025 Advanced Backup System Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Third-Party Licenses
+
+This software uses the following third-party libraries:
+
+### Python Telegram Bot
+- License: LGPLv3
+- Website: https://python-telegram-bot.org/
+
+### Google API Python Client
+- License: Apache License 2.0
+- Website: https://github.com/googleapis/google-api-python-client
+
+### aiohttp
+- License: Apache License 2.0
+- Website: https://github.com/aio-libs/aiohttp
+
+### PyYAML
+- License: MIT License
+- Website: https://github.com/yaml/pyyaml
+
+### python-dotenv
+- License: BSD License
+- Website: https://github.com/theskumar/python-dotenv
+
+### cryptography
+- License: Apache License 2.0 or BSD License
+- Website: https://github.com/pyca/cryptography
+
+### psutil
+- License: BSD License
+- Website: https://github.com/giampaolo/psutil
+
+---
+
+## Attribution
+
+This project was created to provide an easy-to-use backup solution for Android/Termux users with Google Drive integration and Telegram bot control.
+
+Special thanks to the open-source community for the amazing libraries that made this project possible.
