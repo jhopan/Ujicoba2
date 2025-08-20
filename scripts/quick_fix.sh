@@ -65,12 +65,36 @@ echo ""
 echo "🧪 Step 6: Test bot import..."
 python -c "
 import sys
+import os
 sys.path.insert(0, 'src')
+os.chdir('/data/data/com.termux/files/home/UjiCoba')
+
+print('📁 Current directory:', os.getcwd())
+print('🐍 Python path:', sys.path[:3])
+
 try:
+    # Test if src/telegram directory exists
+    import telegram as tg_folder
+    print('✅ src/telegram folder accessible')
+    
+    # Test our custom bot import
     from telegram.termux_telegram_bot import TermuxTelegramBot
-    print('✅ Bot import: OK')
+    print('✅ TermuxTelegramBot import: OK')
+    
+    # Test bot initialization
+    bot = TermuxTelegramBot()
+    print('✅ Bot initialization: OK')
+except ImportError as e:
+    print(f'❌ Import error: {e}')
+    print('📋 Available in src/telegram/:')
+    try:
+        import os
+        files = os.listdir('src/telegram')
+        for f in files: print(f'   {f}')
+    except:
+        print('   src/telegram not found')
 except Exception as e:
-    print(f'❌ Bot import failed: {e}')
+    print(f'❌ Other error: {e}')
 "
 
 echo ""
@@ -98,7 +122,19 @@ signal.signal(signal.SIGINT, signal_handler)
 
 async def main():
     try:
-        from telegram.termux_telegram_bot import TermuxTelegramBot
+        # Try multiple import methods
+        try:
+            from telegram.termux_telegram_bot import TermuxTelegramBot
+        except ImportError:
+            # Fallback: try direct import from file
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(
+                "termux_telegram_bot", 
+                "src/telegram/termux_telegram_bot.py"
+            )
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            TermuxTelegramBot = module.TermuxTelegramBot
         
         print("🤖 Starting Termux Telegram Bot...")
         bot = TermuxTelegramBot()

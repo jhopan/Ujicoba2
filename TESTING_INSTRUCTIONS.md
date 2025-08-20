@@ -31,6 +31,15 @@ cd UjiCoba
 ./scripts/setup_pip.sh
 ```
 
+### 5. 🆕 Jika Error Import "No module named 'telegram.termux_telegram_bot'"
+```bash
+# Test import paths
+./scripts/test_import.sh
+
+# Quick fix semua masalah
+./scripts/quick_fix.sh
+```
+
 ---
 
 ## 🔧 Testing Checklist
