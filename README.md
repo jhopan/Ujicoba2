@@ -3,7 +3,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Telegram Bot](https://img.shields.io/badge/Telegram-Bot%20Ready-blue.svg)](https://core.telegram.org/bots)
-[![GitHub release](https://img.shields.io/github/v/release/jhopan/BackupHpDriveOtomatis-Termux)](https://github.com/jhopan/BackupHpDriveOtomatis-Termux/releases)
 
 **🤖 Sistem backup otomatis HP Android ke Google Drive dengan interface Telegram yang sangat user-friendly**
 
@@ -12,8 +11,8 @@
 - 🎯 **Super User-Friendly** - Click-click interface, tidak perlu hafal command
 - ☁️ **Unlimited Storage** - Support multiple Google Drive accounts (15GB per akun)
 - 📱 **Termux Optimized** - Khusus untuk Android, tidak perlu root
-- �️ **Smart Auto-Delete** - Toggle hapus file setelah backup sukses
-- � **One-Command Install** - Setup dalam 2 menit
+- 🗑️ **Smart Auto-Delete** - Toggle hapus file setelah backup sukses
+- ⚡ **One-Command Install** - Setup dalam 2 menit
 
 ## 🎯 Siapa yang Perlu Tool Ini?
 
@@ -26,23 +25,24 @@
 ## 📱 Demo Interface Bot
 
 ```
-🤖 BACKUP HP KE DRIVE OTOMATIS
-📱 Backup Android dengan Storage Unlimited
+🤖 TERMUX BACKUP SYSTEM
+📱 Android Backup dengan Unlimited Storage
 
-👤 User: Anda
-📊 Status: ✅ Siap Backup
-🗃️ Akun: 3 Google Drive (45GB total)
-📁 Folder: 8 dipantau
+👤 User: Jhosua Armando
+📊 Status: ⚠️ Setup Needed
+🗃️ Accounts: 0 Google Drive
+📁 Folders: 0 monitored
 
-🎯 Menu Utama:
+🎯 Pilih menu:
 
-[🚀 Backup Cepat] [⏸️ Stop]
-[👥 Kelola Akun Drive] [📁 Pilih Folder]
-[🗑️ Auto-Delete: ON] [📊 Status Sistem]
-[💾 Backup Manual] [⏰ Jadwal Otomatis]
+[⚡ Setup Google Drive]
+[👥 Google Drive] [📁 Folders]
+[⚙️ Auto-Delete Setting] [📊 Status]
+[💾 Manual Backup] [⏰ Schedule]
+[📋 Logs] [❓ Help]
 ```
 
-## � Instalasi Super Cepat
+## ⚡ Instalasi Super Cepat
 
 ### Method 1: Auto Install (Recommended)
 ```bash
@@ -52,6 +52,10 @@ cd BackupHpDriveOtomatis-Termux
 chmod +x quick_start.sh
 ./quick_start.sh
 ```
+
+**Setup akan otomatis minta:**
+- 🔑 **Bot Token** - Dari @BotFather
+- 👤 **User ID** - Dari @userinfobot
 
 ### Method 2: Manual Install
 ```bash
@@ -73,31 +77,30 @@ termux-setup-storage
 python main.py
 ```
 
-## 📱 Interface Bot Telegram
+## � Security Features
 
-```
-🤖 TERMUX BACKUP SYSTEM
-📱 Android Backup dengan Unlimited Storage
+⚡ **Bot Token Required** - Hanya bot Anda yang bisa jalan  
+👤 **User ID Protection** - Hanya Anda yang bisa akses bot  
+�️ **No Public Access** - Bot pribadi, bukan untuk umum  
 
-👤 User: Nama Anda
-📊 Status: ✅ Ready
-🗃️ Accounts: 2 Google Drive
-📁 Folders: 5 monitored
+## 🚀 Quick Start Guide
 
-🎯 Main Menu:
+1. **Buat Bot Telegram:**
+   - Chat @BotFather → `/newbot`
+   - Copy Bot Token
 
-[🚀 Quick Backup] [⏸️ Stop Backup]
-[👥 Google Drive] [📁 Backup Folders]  
-[⚙️ Auto-Delete Settings] [📊 System Status]
-[💾 Manual Backup] [⏰ Schedule Backup]
-[📋 View Logs] [❓ Help & Support]
-```
+2. **Dapatkan User ID:**
+   - Chat @userinfobot → `/start`
+   - Copy User ID (angka)
 
-## 🎯 Fitur Smart
+3. **Jalankan Quick Install:**
+   ```bash
+   ./quick_start.sh
+   ```
 
-### 🚀 Opsi Backup
-- **Quick Backup** - Backup semua folder sekaligus
-- **Custom Backup** - Pilih folder tertentu
+4. **Paste Token & User ID** saat diminta
+
+5. **Done!** Bot langsung jalan dan siap dipakai
 - **Smart Backup** - Hanya file yang berubah
 - **Scheduled Backup** - Otomatis sesuai jadwal
 
