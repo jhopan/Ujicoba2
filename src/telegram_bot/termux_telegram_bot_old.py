@@ -1,33 +1,28 @@
 """
-🚀 TERMUX TELEGRAM BOT - User Friendly Interface
-📱 Bot khusus untuk Android Termux dengan button interface
-🎯 Click-click interface, tidak perlu ketik command manual
+🚀 TERMUX TELEGRAM BOT - Modular Architecture
+📱 Bot khusus untuk Android Termux dengan arsitektur modular
+🎯 Clean code structure untuk maintainability yang lebih baik
 """
 
 import os
 import sys
-import json
-import asyncio
 import logging
-import signal
 from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 try:
-    from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand, ReplyKeyboardMarkup, KeyboardButton
-    from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes, ConversationHandler
-    from telegram.constants import ParseMode
     TELEGRAM_AVAILABLE = True
-    logger.info("✅ Telegram library loaded")
+    logger.info("✅ Telegram library available")
 except ImportError:
     TELEGRAM_AVAILABLE = False
     logger.error("❌ Telegram library not available")
     print("📦 Install: pip install python-telegram-bot")
+
+# Import the new modular bot orchestrator
+from .bot_orchestrator import create_bot
 
 # Project paths untuk Termux
 PROJECT_ROOT = Path(__file__).parent.parent.parent

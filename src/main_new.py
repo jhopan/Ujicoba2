@@ -15,7 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 # Import our modular telegram bot
-from telegram_bot.termux_telegram_bot import TermuxTelegramBot
+from telegram.termux_telegram_bot import TermuxTelegramBot
 
 # Configure logging
 def setup_logging():
