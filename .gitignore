@@ -46,16 +46,6 @@ logs/*.log
 *.sqlite
 *.sqlite3
 
-# Credentials and Config - JANGAN COMMIT!
-.env
-.env.local
-.env.*.local
-credentials/*.json
-credentials/*.key
-credentials/*.pem
-credentials/token*.json
-token.txt
-
 # Backup files
 backups/
 temp/*
@@ -92,6 +82,3 @@ ENV/
 .DS_Store
 Thumbs.db
 *.tmp
-
-# Config files dengan data sensitif
-config/local_settings.py
