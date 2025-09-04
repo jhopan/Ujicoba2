@@ -4,11 +4,17 @@ Untuk mengelola backup ke 2-3 akun Google Drive
 """
 
 import os
+import sys
 import json
 import logging
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Optional
+
+# Add project root to path
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
 from src.google_drive_manager import GoogleDriveManager
 from config.settings import GOOGLE_DRIVE_CONFIG, BACKUP_CONFIG
 

@@ -14,6 +14,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 try:
+    import telegram
     TELEGRAM_AVAILABLE = True
     logger.info("✅ Telegram library available")
 except ImportError:

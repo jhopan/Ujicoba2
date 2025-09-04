@@ -149,4 +149,6 @@ class TermuxTelegramBot:
 # Factory function for easy bot creation
 def create_bot(token: str) -> TermuxTelegramBot:
     """Create and return configured bot instance"""
-    return TermuxTelegramBot(token)
+    bot = TermuxTelegramBot(token)
+    bot.create_application()
+    return bot

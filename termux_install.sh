@@ -36,7 +36,21 @@ sleep 2
 # Install Python packages
 echo "🐍 Install Python dependencies..."
 pip install --upgrade pip
-pip install python-telegram-bot google-api-python-client google-auth-httplib2 google-auth-oauthlib
+
+# Install core packages one by one untuk better error handling
+echo "📦 Installing telegram bot..."
+pip install python-telegram-bot
+
+echo "📦 Installing Google APIs..."
+pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+
+echo "📦 Installing utilities..."
+pip install python-dotenv pyyaml aiofiles schedule
+
+# Optional packages (skip if error)
+echo "📦 Installing optional packages..."
+pip install aiohttp || echo "⚠️ aiohttp installation skipped"
+pip install psutil || echo "⚠️ psutil installation skipped"
 
 # Setup konfigurasi
 echo "🛠️ Setup konfigurasi..."

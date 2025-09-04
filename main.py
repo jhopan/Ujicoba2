@@ -14,12 +14,13 @@ from pathlib import Path
 # Add src to Python path
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
+sys.path.insert(0, str(PROJECT_ROOT))  # Add root for config import
 
 def main():
     """Main entry point - Start the Telegram bot"""
     try:
         # Import and start the Termux Telegram bot
-        from telegram.termux_telegram_bot import main as start_bot
+        from src.telegram_bot.termux_telegram_bot import main as start_bot
         print("🚀 Starting Advanced Backup System...")
         print("📱 Telegram Bot Interface")
         print("=" * 50)

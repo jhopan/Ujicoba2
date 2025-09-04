@@ -1,0 +1,21 @@
+# 📱 Termux Compatible Requirements
+# Essential packages only untuk termux install
+
+# Telegram Bot (essential)
+python-telegram-bot
+
+# Google Drive API (essential)
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+google-auth
+
+# Configuration (essential)
+python-dotenv
+pyyaml
+
+# File operations (essential)
+aiofiles
+
+# Optional utilities
+schedule

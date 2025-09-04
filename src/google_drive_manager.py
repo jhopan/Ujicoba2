@@ -7,13 +7,21 @@ import io
 import json
 import pickle
 from pathlib import Path
+import os
+import sys
+import logging
+from pathlib import Path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from googleapiclient.errors import HttpError
-import logging
+
+# Add project root to path untuk import config
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
 from config.settings import GOOGLE_DRIVE_CONFIG
 
 class GoogleDriveManager:
