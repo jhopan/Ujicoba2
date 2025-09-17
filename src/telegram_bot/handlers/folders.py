@@ -225,30 +225,28 @@ class FolderHandler:
     
     @staticmethod
     async def add_custom_path(query):
-        """📝 Add custom folder path"""
-        await query.answer("📝 Custom path feature")
+        """📝 Add custom folder path - User friendly version"""
+        await query.answer("� Choose popular folders")
         
         instruction_text = """
-📝 *ADD CUSTOM FOLDER PATH*
+� *ADD POPULAR FOLDERS*
 
-🎯 *How to add custom folder:*
+🎯 *Quick Add Popular Folders:*
 
-1️⃣ Send me the folder path like this:
-   `/add_folder /storage/emulated/0/MyFolder`
+Choose from common Android folders below, or use manual path if needed.
 
-2️⃣ Or specify name and path:
-   `/add_folder MyMusic /storage/emulated/0/Music`
-
-3️⃣ Examples:
-   • `/add_folder /sdcard/MyFolder`
-   • `/add_folder Games /storage/emulated/0/Games`
-   • `/add_folder Work /storage/emulated/0/Documents/Work`
-
-📋 *Format:* `/add_folder [name] [path]`
-💡 *Path must exist on your device*
+💡 *Popular folders are pre-configured with correct paths*
         """
         
         keyboard = [
+            [InlineKeyboardButton("🎵 Music", callback_data="add_folder_music")],
+            [InlineKeyboardButton("🎬 Movies", callback_data="add_folder_movies")],
+            [InlineKeyboardButton("🎮 Games Data", callback_data="add_folder_games")],
+            [InlineKeyboardButton("📷 Camera", callback_data="add_folder_camera")],
+            [InlineKeyboardButton("🎙️ Recordings", callback_data="add_folder_recordings")],
+            [InlineKeyboardButton("� Backups", callback_data="add_folder_backups")],
+            [InlineKeyboardButton("📱 Screenshots", callback_data="add_folder_screenshots")],
+            [InlineKeyboardButton("📝 Manual Path", callback_data="add_manual_path")],
             [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")],
             [InlineKeyboardButton("🔙 Main Menu", callback_data="back_to_main")]
         ]
@@ -420,6 +418,131 @@ class FolderHandler:
                 [InlineKeyboardButton("🔙 Main Menu", callback_data="back_to_main")]
             ]
         
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            success_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+    
+    # Popular folder shortcuts
+    @staticmethod
+    async def add_folder_music(query):
+        """🎵 Add Music folder"""
+        music_path = str(STORAGE_PATH / "Music")
+        config_manager.save_folder_config("Music", music_path)
+        await query.answer("✅ Music folder added")
+        await FolderHandler._show_folder_added_success(query, "Music", music_path, "🎵", "MP3, FLAC, M4A, etc.")
+    
+    @staticmethod
+    async def add_folder_movies(query):
+        """🎬 Add Movies folder"""
+        movies_path = str(STORAGE_PATH / "Movies")
+        config_manager.save_folder_config("Movies", movies_path)
+        await query.answer("✅ Movies folder added")
+        await FolderHandler._show_folder_added_success(query, "Movies", movies_path, "🎬", "MP4, AVI, MKV, etc.")
+    
+    @staticmethod
+    async def add_folder_games(query):
+        """🎮 Add Games Data folder"""
+        games_path = str(STORAGE_PATH / "Android" / "data")
+        config_manager.save_folder_config("Games Data", games_path)
+        await query.answer("✅ Games data folder added")
+        await FolderHandler._show_folder_added_success(query, "Games Data", games_path, "🎮", "Game saves & data")
+    
+    @staticmethod
+    async def add_folder_camera(query):
+        """📷 Add Camera folder"""
+        camera_path = str(STORAGE_PATH / "DCIM" / "Camera")
+        config_manager.save_folder_config("Camera", camera_path)
+        await query.answer("✅ Camera folder added")
+        await FolderHandler._show_folder_added_success(query, "Camera", camera_path, "📷", "Photos & Videos")
+    
+    @staticmethod
+    async def add_folder_recordings(query):
+        """🎙️ Add Recordings folder"""
+        recordings_path = str(STORAGE_PATH / "Recordings")
+        config_manager.save_folder_config("Recordings", recordings_path)
+        await query.answer("✅ Recordings folder added")
+        await FolderHandler._show_folder_added_success(query, "Recordings", recordings_path, "🎙️", "Voice recordings")
+    
+    @staticmethod
+    async def add_folder_backups(query):
+        """💾 Add Backups folder"""
+        backups_path = str(STORAGE_PATH / "Backups")
+        config_manager.save_folder_config("Backups", backups_path)
+        await query.answer("✅ Backups folder added")
+        await FolderHandler._show_folder_added_success(query, "Backups", backups_path, "💾", "App & system backups")
+    
+    @staticmethod
+    async def add_folder_screenshots(query):
+        """📱 Add Screenshots folder"""
+        screenshots_path = str(STORAGE_PATH / "Pictures" / "Screenshots")
+        config_manager.save_folder_config("Screenshots", screenshots_path)
+        await query.answer("✅ Screenshots folder added")
+        await FolderHandler._show_folder_added_success(query, "Screenshots", screenshots_path, "📱", "Screen captures")
+    
+    @staticmethod
+    async def add_manual_path(query):
+        """📝 Manual path entry (original method)"""
+        await query.answer("📝 Manual path instructions")
+        
+        instruction_text = """
+📝 *MANUAL FOLDER PATH*
+
+🎯 *For advanced users only:*
+
+💡 *Use command format:*
+   `/add_folder FolderName /path/to/folder`
+
+📋 *Examples:*
+   • `/add_folder MyMusic /storage/emulated/0/Music`
+   • `/add_folder Work /storage/emulated/0/Documents/Work`
+   • `/add_folder MyApps /storage/emulated/0/Android/data`
+
+⚠️ *Note:* Path must exist on your device
+
+🔄 *Tip:* Use file manager to find exact path
+        """
+        
+        keyboard = [
+            [InlineKeyboardButton("📂 Popular Folders", callback_data="add_custom_path")],
+            [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            instruction_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+    
+    @staticmethod
+    async def _show_folder_added_success(query, folder_name: str, folder_path: str, icon: str, file_types: str):
+        """Helper method to show folder added success message"""
+        success_text = f"""
+✅ *{folder_name.upper()} FOLDER ADDED*
+
+{icon} *Folder:* {folder_name}
+📂 *Path:* `{folder_path}`
+📊 *Content:* {file_types}
+
+🎯 *Features:*
+• Automatic file detection
+• Smart organization
+• Incremental backup
+• Safe file handling
+
+💡 *{folder_name} files will be backed up to Google Drive*
+        """
+        
+        keyboard = [
+            [InlineKeyboardButton("📂 Add More Popular", callback_data="add_custom_path")],
+            [InlineKeyboardButton("📁 Manage Folders", callback_data="manage_folders")],
+            [InlineKeyboardButton("🚀 Start Backup", callback_data="quick_backup")],
+            [InlineKeyboardButton("🔙 Main Menu", callback_data="back_to_main")]
+        ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(

@@ -80,6 +80,16 @@ class TermuxTelegramBot:
         # Help handlers
         app.add_handler(CallbackQueryHandler(self.help_menu_callback, pattern="^help_menu$"))
         
+        # Popular folder handlers
+        app.add_handler(CallbackQueryHandler(self.add_folder_music_callback, pattern="^add_folder_music$"))
+        app.add_handler(CallbackQueryHandler(self.add_folder_movies_callback, pattern="^add_folder_movies$"))
+        app.add_handler(CallbackQueryHandler(self.add_folder_games_callback, pattern="^add_folder_games$"))
+        app.add_handler(CallbackQueryHandler(self.add_folder_camera_callback, pattern="^add_folder_camera$"))
+        app.add_handler(CallbackQueryHandler(self.add_folder_recordings_callback, pattern="^add_folder_recordings$"))
+        app.add_handler(CallbackQueryHandler(self.add_folder_backups_callback, pattern="^add_folder_backups$"))
+        app.add_handler(CallbackQueryHandler(self.add_folder_screenshots_callback, pattern="^add_folder_screenshots$"))
+        app.add_handler(CallbackQueryHandler(self.add_manual_path_callback, pattern="^add_manual_path$"))
+        
         # Dynamic folder removal handler
         app.add_handler(CallbackQueryHandler(self.remove_specific_folder_callback, pattern="^remove_folder_"))
         
@@ -262,6 +272,39 @@ class TermuxTelegramBot:
     async def help_menu_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for help menu callback"""
         await HelpHandler.help_menu(update.callback_query)
+    
+    # Popular folder callback wrappers
+    async def add_folder_music_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add music folder callback"""
+        await FolderHandler.add_folder_music(update.callback_query)
+    
+    async def add_folder_movies_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add movies folder callback"""
+        await FolderHandler.add_folder_movies(update.callback_query)
+    
+    async def add_folder_games_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add games folder callback"""
+        await FolderHandler.add_folder_games(update.callback_query)
+    
+    async def add_folder_camera_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add camera folder callback"""
+        await FolderHandler.add_folder_camera(update.callback_query)
+    
+    async def add_folder_recordings_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add recordings folder callback"""
+        await FolderHandler.add_folder_recordings(update.callback_query)
+    
+    async def add_folder_backups_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add backups folder callback"""
+        await FolderHandler.add_folder_backups(update.callback_query)
+    
+    async def add_folder_screenshots_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add screenshots folder callback"""
+        await FolderHandler.add_folder_screenshots(update.callback_query)
+    
+    async def add_manual_path_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for manual path callback"""
+        await FolderHandler.add_manual_path(update.callback_query)
     
     def create_application(self):
         """Create and configure the bot application"""
