@@ -18,10 +18,10 @@ from typing import Dict, List, Optional, Tuple
 import logging
 
 from src.enhanced_google_drive_manager import EnhancedGoogleDriveManager
-from src.network_manager import NetworkManager
-from src.folder_manager import FolderManager
-from config.enhanced_settings import EnhancedSettings
-from utils.file_organizer import FileOrganizer
+from src.utils.network_manager import NetworkManager
+from src.utils.folder_manager import FolderManager  
+from src.utils.enhanced_settings import EnhancedSettings
+from src.utils.file_organizer import FileOrganizer
 
 class EnhancedBackupManager:
     """Enhanced Backup Manager dengan fitur lengkap"""

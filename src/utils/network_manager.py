@@ -3,10 +3,18 @@ Network Manager for handling connectivity checks and network-related operations
 """
 
 import asyncio
-import aiohttp
 import logging
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Dict
 from datetime import datetime, timedelta
+
+try:
+    import aiohttp
+    AIOHTTP_AVAILABLE = True
+except ImportError:
+    AIOHTTP_AVAILABLE = False
+    # Fallback untuk basic connectivity check
+    import urllib.request
+    import urllib.error
 
 logger = logging.getLogger(__name__)
 
@@ -40,15 +48,27 @@ class NetworkManager:
             return True
         
         try:
-            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=self.timeout)) as session:
+            if AIOHTTP_AVAILABLE:
+                async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=self.timeout)) as session:
+                    for url in self.test_urls:
+                        try:
+                            async with session.get(url) as response:
+                                if response.status == 200:
+                                    self.last_check = now
+                                    logger.info("Network connectivity confirmed")
+                                    return True
+                        except Exception as e:
+                            logger.debug(f"Failed to reach {url}: {e}")
+                            continue
+            else:
+                # Fallback using urllib
                 for url in self.test_urls:
                     try:
-                        async with session.get(url) as response:
-                            if response.status == 200:
-                                self.last_check = now
-                                logger.info("Network connectivity confirmed")
-                                return True
-                    except Exception as e:
+                        urllib.request.urlopen(url, timeout=self.timeout)
+                        self.last_check = now
+                        logger.info("Network connectivity confirmed (fallback)")
+                        return True
+                    except (urllib.error.URLError, Exception) as e:
                         logger.debug(f"Failed to reach {url}: {e}")
                         continue
                 
@@ -213,3 +233,27 @@ class NetworkManager:
                     await asyncio.sleep(delay)
         
         return False, None, f"Operation failed after {max_retries} attempts. Last error: {last_error}"
+    
+    def check_network(self) -> Dict[str, any]:
+        """
+        Synchronous network check for compatibility
+        
+        Returns:
+            dict: Network status with 'connected' key
+        """
+        try:
+            if AIOHTTP_AVAILABLE:
+                # For async environments, we'll do a simple check
+                import socket
+                socket.create_connection(("8.8.8.8", 53), timeout=5)
+                return {'connected': True}
+            else:
+                # Use urllib fallback
+                try:
+                    urllib.request.urlopen('https://www.google.com', timeout=self.timeout)
+                    return {'connected': True}
+                except:
+                    return {'connected': False}
+        except Exception as e:
+            logger.debug(f"Network check failed: {e}")
+            return {'connected': False}
