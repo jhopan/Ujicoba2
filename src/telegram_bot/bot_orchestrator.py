@@ -5,7 +5,7 @@
 
 import logging
 from telegram import Update
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
 
 # Import all handlers
 from .config.manager import config_manager
@@ -43,11 +43,11 @@ class TermuxTelegramBot:
         app.add_handler(CommandHandler("status", self.status_command))
         
         # Main navigation callback handlers
-        app.add_handler(CallbackQueryHandler(MainMenuHandler.show_main_menu, pattern="^back_to_main$"))
-        app.add_handler(CallbackQueryHandler(MainMenuHandler.show_main_menu, pattern="^main_menu$"))
+        app.add_handler(CallbackQueryHandler(self.main_menu_callback, pattern="^back_to_main$"))
+        app.add_handler(CallbackQueryHandler(self.main_menu_callback, pattern="^main_menu$"))
         
         # Google Drive handlers (hanya yang ada)
-        app.add_handler(CallbackQueryHandler(GoogleDriveHandler.setup_drive_menu, pattern="^setup_drive$"))
+        app.add_handler(CallbackQueryHandler(self.setup_drive_callback, pattern="^setup_drive$"))
         
         # Folder management handlers (hanya yang ada)
         app.add_handler(CallbackQueryHandler(FolderHandler.manage_folders_menu, pattern="^manage_folders$"))
@@ -72,15 +72,15 @@ class TermuxTelegramBot:
     
     async def start_command(self, update: Update, context):
         """Handle /start command"""
-        await MainMenuHandler.show_main_menu(update.callback_query if update.callback_query else update)
+        await MainMenuHandler.show_main_menu(update, context)
     
     async def menu_command(self, update: Update, context):
         """Handle /menu command"""
-        await MainMenuHandler.show_main_menu(update.callback_query if update.callback_query else update)
+        await MainMenuHandler.show_main_menu(update, context)
     
     async def help_command(self, update: Update, context):
         """Handle /help command"""
-        await HelpHandler.help_menu(update.callback_query if update.callback_query else update)
+        await HelpHandler.help_menu(update, context)
     
     async def status_command(self, update: Update, context):
         """Handle /status command - quick status check"""
@@ -118,6 +118,14 @@ class TermuxTelegramBot:
                 )
             except:
                 pass
+    
+    async def main_menu_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for main menu callback"""
+        await MainMenuHandler.show_main_menu(update, context)
+    
+    async def setup_drive_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for setup drive callback"""
+        await GoogleDriveHandler.setup_drive_menu(update, context)
     
     def create_application(self):
         """Create and configure the bot application"""
