@@ -241,12 +241,13 @@ AUDIT_LOGGING=true
             logger.info("🎯 Creating modular bot with orchestrator...")
             self.bot = create_bot(self.token)
             
-            # Run the bot
+            # Run the bot with polling instead of run()
             logger.info("🚀 Starting modular Termux Telegram Bot...")
             logger.info("📱 All handlers loaded from modular structure")
             logger.info("✅ Ready for Android backup operations!")
             
-            self.bot.run()
+            # Use run_polling instead of run() to avoid event loop issues
+            self.bot.run_polling()
             
         except Exception as e:
             logger.error(f"❌ Error starting modular bot: {e}")

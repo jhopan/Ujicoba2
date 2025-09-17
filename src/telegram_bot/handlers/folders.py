@@ -224,6 +224,43 @@ class FolderHandler:
         )
     
     @staticmethod
+    async def add_custom_path(query):
+        """📝 Add custom folder path"""
+        await query.answer("📝 Custom path feature")
+        
+        instruction_text = """
+📝 *ADD CUSTOM FOLDER PATH*
+
+🎯 *How to add custom folder:*
+
+1️⃣ Send me the folder path like this:
+   `/add_folder /storage/emulated/0/MyFolder`
+
+2️⃣ Or specify name and path:
+   `/add_folder MyMusic /storage/emulated/0/Music`
+
+3️⃣ Examples:
+   • `/add_folder /sdcard/MyFolder`
+   • `/add_folder Games /storage/emulated/0/Games`
+   • `/add_folder Work /storage/emulated/0/Documents/Work`
+
+📋 *Format:* `/add_folder [name] [path]`
+💡 *Path must exist on your device*
+        """
+        
+        keyboard = [
+            [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")],
+            [InlineKeyboardButton("🔙 Main Menu", callback_data="back_to_main")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            instruction_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+    
+    @staticmethod
     async def view_all_folders(query):
         """📋 View all monitored folders"""
         folders = config_manager.get_folders()

@@ -41,6 +41,7 @@ class TermuxTelegramBot:
         app.add_handler(CommandHandler("menu", self.menu_command))
         app.add_handler(CommandHandler("help", self.help_command))
         app.add_handler(CommandHandler("status", self.status_command))
+        app.add_handler(CommandHandler("add_folder", self.add_folder_command))
         
         # Main navigation callback handlers
         app.add_handler(CallbackQueryHandler(self.main_menu_callback, pattern="^back_to_main$"))
@@ -112,6 +113,44 @@ class TermuxTelegramBot:
         """
         
         await update.message.reply_text(status_text, parse_mode='Markdown')
+    
+    async def add_folder_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /add_folder command"""
+        if not context.args:
+            await update.message.reply_text(
+                "📝 *Add Custom Folder*\n\n"
+                "🎯 Usage: `/add_folder [name] [path]`\n\n"
+                "📋 Examples:\n"
+                "• `/add_folder /storage/emulated/0/MyFolder`\n"
+                "• `/add_folder MyMusic /storage/emulated/0/Music`\n"
+                "• `/add_folder Work /storage/emulated/0/Documents/Work`",
+                parse_mode='Markdown'
+            )
+            return
+        
+        if len(context.args) == 1:
+            # Only path provided, use folder name from path
+            path = context.args[0]
+            name = path.split('/')[-1] or "Custom Folder"
+        else:
+            # Name and path provided
+            name = context.args[0]
+            path = context.args[1]
+        
+        try:
+            config_manager.save_folder_config(name, path)
+            await update.message.reply_text(
+                f"✅ *Folder Added*\n\n"
+                f"📁 *Name:* {name}\n"
+                f"📂 *Path:* `{path}`\n\n"
+                f"💡 Use /menu to manage all folders",
+                parse_mode='Markdown'
+            )
+        except Exception as e:
+            await update.message.reply_text(
+                f"❌ *Error adding folder:*\n`{str(e)}`",
+                parse_mode='Markdown'
+            )
     
     async def handle_unknown_callback(self, query):
         """Handle unknown callback queries"""

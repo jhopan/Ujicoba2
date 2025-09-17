@@ -78,12 +78,17 @@ class ConfigManager:
         folders = []
         if folders_file.exists():
             try:
-                folders = json.loads(folders_file.read_text())
+                loaded_data = json.loads(folders_file.read_text())
+                # Ensure we have a list of dictionaries
+                if isinstance(loaded_data, list):
+                    folders = [f for f in loaded_data if isinstance(f, dict)]
+                else:
+                    folders = []
             except:
                 folders = []
         
         # Add new folder if not exists
-        existing = [f for f in folders if f.get('path') == path]
+        existing = [f for f in folders if isinstance(f, dict) and f.get('path') == path]
         if not existing:
             folders.append({
                 'name': name,
@@ -101,8 +106,11 @@ class ConfigManager:
             return 0
         
         try:
-            folders = json.loads(folders_file.read_text())
-            return len([f for f in folders if f.get('active', True)])
+            loaded_data = json.loads(folders_file.read_text())
+            if isinstance(loaded_data, list):
+                folders = [f for f in loaded_data if isinstance(f, dict)]
+                return len([f for f in folders if f.get('active', True)])
+            return 0
         except:
             return 0
     
@@ -113,7 +121,10 @@ class ConfigManager:
             return []
         
         try:
-            return json.loads(folders_file.read_text())
+            loaded_data = json.loads(folders_file.read_text())
+            if isinstance(loaded_data, list):
+                return [f for f in loaded_data if isinstance(f, dict)]
+            return []
         except:
             return []
     
