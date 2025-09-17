@@ -8,16 +8,14 @@ __version__ = "1.0.0"
 __author__ = "Backup System Team" 
 __description__ = "Advanced backup system with Telegram bot control for Android/Termux"
 
-# Import main modules
-from .main import BackupSystemManager
-from .advanced_telegram_bot import AdvancedTelegramBot
+# Import main modules yang tersedia
+from .telegram_bot.termux_telegram_bot import TermuxTelegramBot
 from .enhanced_backup_manager import EnhancedBackupManager
 from .enhanced_google_drive_manager import EnhancedGoogleDriveManager
 from .database_manager import DatabaseManager
 
 __all__ = [
-    'BackupSystemManager',
-    'AdvancedTelegramBot',
+    'TermuxTelegramBot',
     'EnhancedBackupManager',
     'EnhancedGoogleDriveManager', 
     'DatabaseManager'
