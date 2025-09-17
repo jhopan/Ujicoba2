@@ -183,8 +183,75 @@ AUDIT_LOGGING=true
     
     def run_sync(self):
         """🔄 Synchronous run method"""
-        import asyncio
-        asyncio.run(self.auto_start())
+        try:
+            # Run setup check first
+            self._run_setup_check()
+            
+            # Then run bot directly without asyncio.run()
+            self._run_bot_sync()
+            
+        except Exception as e:
+            logger.error(f"❌ Error in run_sync: {e}")
+            print(f"\n❌ Error: {e}")
+            print("🔧 Check your configuration and try again")
+    
+    def _run_setup_check(self):
+        """Check if setup is needed"""
+        logger.info("📱 Starting modular Termux bot...")
+        
+        env_file = PROJECT_ROOT / ".env"
+        
+        if not env_file.exists() or not self._is_setup_complete():
+            logger.info("🛠️ Setup required...")
+            self._run_termux_setup_sync()
+        else:
+            logger.info("✅ Setup complete, starting modular bot...")
+    
+    def _run_termux_setup_sync(self):
+        """🛠️ Interactive setup untuk Termux (sync version)"""
+        print("\n" + "="*50)
+        print("🤖 TERMUX BACKUP SYSTEM - MODULAR SETUP")
+        print("📱 Setup khusus untuk Android Termux")
+        print("🎯 Menggunakan arsitektur modular yang baru")
+        print("="*50)
+        
+        print("\n❌ Bot belum dikonfigurasi!")
+        print("💡 Jalankan script setup terlebih dahulu:")
+        print("   ./quick_start.sh")
+        print("   atau")
+        print("   python setup_config.py")
+        print("\n" + "="*50)
+    
+    def _run_bot_sync(self):
+        """🚀 Run the modular bot (sync version)"""
+        try:
+            # Load token from environment
+            if not self.token:
+                env_file = PROJECT_ROOT / ".env"
+                with open(env_file, 'r') as f:
+                    for line in f:
+                        if line.startswith('TELEGRAM_BOT_TOKEN='):
+                            self.token = line.split('=', 1)[1].strip()
+                            break
+            
+            if not self.token:
+                raise ValueError("No bot token found")
+            
+            # Create modular bot using orchestrator
+            logger.info("🎯 Creating modular bot with orchestrator...")
+            self.bot = create_bot(self.token)
+            
+            # Run the bot
+            logger.info("🚀 Starting modular Termux Telegram Bot...")
+            logger.info("📱 All handlers loaded from modular structure")
+            logger.info("✅ Ready for Android backup operations!")
+            
+            self.bot.run()
+            
+        except Exception as e:
+            logger.error(f"❌ Error starting modular bot: {e}")
+            print(f"\n❌ Error: {e}")
+            print("🔧 Check your configuration and try again")
 
 
 def main():
