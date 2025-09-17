@@ -51,6 +51,13 @@ class TermuxTelegramBot:
         
         # Folder management handlers
         app.add_handler(CallbackQueryHandler(self.manage_folders_callback, pattern="^manage_folders$"))
+        app.add_handler(CallbackQueryHandler(self.add_downloads_callback, pattern="^add_downloads$"))
+        app.add_handler(CallbackQueryHandler(self.add_pictures_callback, pattern="^add_pictures$"))
+        app.add_handler(CallbackQueryHandler(self.add_documents_callback, pattern="^add_documents$"))
+        app.add_handler(CallbackQueryHandler(self.add_whatsapp_callback, pattern="^add_whatsapp$"))
+        app.add_handler(CallbackQueryHandler(self.add_dcim_callback, pattern="^add_dcim$"))
+        app.add_handler(CallbackQueryHandler(self.view_all_folders_callback, pattern="^view_all_folders$"))
+        app.add_handler(CallbackQueryHandler(self.remove_folder_callback, pattern="^remove_folder$"))
         
         # Backup operation handlers
         app.add_handler(CallbackQueryHandler(self.quick_backup_callback, pattern="^quick_backup$"))
@@ -136,6 +143,35 @@ class TermuxTelegramBot:
     async def manage_folders_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for manage folders callback"""
         await FolderHandler.manage_folders_menu(update.callback_query)
+    
+    async def add_downloads_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add downloads callback"""
+        await FolderHandler.add_downloads_folder(update.callback_query)
+    
+    async def add_pictures_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add pictures callback"""
+        await FolderHandler.add_pictures_folder(update.callback_query)
+    
+    async def add_documents_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add documents callback"""
+        await FolderHandler.add_documents_folder(update.callback_query)
+    
+    async def add_whatsapp_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add whatsapp callback"""
+        await FolderHandler.add_whatsapp_folder(update.callback_query)
+    
+    async def add_dcim_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add dcim callback"""
+        await FolderHandler.add_dcim_folder(update.callback_query)
+    
+    async def view_all_folders_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for view all folders callback"""
+        await FolderHandler.view_all_folders(update.callback_query)
+    
+    async def remove_folder_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for remove folder callback - placeholder"""
+        await update.callback_query.answer("🚧 Remove folder feature coming soon!")
+        await self.manage_folders_callback(update, context)
     
     async def quick_backup_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for quick backup callback"""

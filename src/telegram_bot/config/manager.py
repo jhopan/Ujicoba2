@@ -143,6 +143,8 @@ class ConfigManager:
             'credentials_count': self.count_credentials(),
             'folder_count': self.get_folder_count(),
             'auto_delete': self.get_setting('AUTO_DELETE_AFTER_UPLOAD', 'false') == 'true',
+            'notifications': self.get_setting('NOTIFICATIONS_ENABLED', 'true') == 'true',
+            'debug_mode': self.get_setting('DEBUG_MODE', 'false') == 'true',
             'total_storage': self.count_credentials() * 15,
             'setup_completed': self.get_setting('SETUP_COMPLETED', 'false') == 'true',
             'platform': self.get_setting('PLATFORM', 'unknown')
