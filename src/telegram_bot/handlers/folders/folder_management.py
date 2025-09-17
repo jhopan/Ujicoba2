@@ -216,13 +216,127 @@ Choose from common Android folders below, or use manual path if needed.
     
     @staticmethod
     async def add_manual_path(query):
-        """📝 Manual path entry (original method)"""
-        await query.answer("📝 Manual path instructions")
+        """📝 Advanced folder management options"""
+        await query.answer("📝 Advanced options")
         
         instruction_text = """
-📝 *MANUAL FOLDER PATH*
+📝 *ADVANCED FOLDER OPTIONS*
 
-🎯 *For advanced users only:*
+🎯 *Choose your preferred method:*
+
+🆕 **Create New Folder**
+   • Enter folder name
+   • Auto-created in storage
+   • Instantly added to monitoring
+
+� **Add Existing Folder**  
+   • Specify existing path
+   • Path validation check
+   • Add to monitoring if exists
+
+📋 **Manual Command**
+   • Advanced users only
+   • Full command control
+   • Custom path & name
+
+💡 *Choose the method that works best for you*
+        """
+        
+        keyboard = [
+            [InlineKeyboardButton("🆕 Create New Folder", callback_data="create_new_folder")],
+            [InlineKeyboardButton("📁 Add Existing Folder", callback_data="add_existing_folder")],
+            [InlineKeyboardButton("📋 Manual Command", callback_data="manual_command")],
+            [InlineKeyboardButton("📂 Popular Folders", callback_data="add_custom_path")],
+            [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            instruction_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+
+    @staticmethod
+    async def create_new_folder_instruction(query):
+        """🆕 Create new folder instruction"""
+        await query.answer("🆕 Create new folder")
+        
+        instruction_text = """
+🆕 *CREATE NEW FOLDER*
+
+🎯 *How it works:*
+   • Type folder name only
+   • Folder created in main storage
+   • Auto-added to monitoring
+
+💡 *Example commands:*
+   • `/create_folder MyProject`
+   • `/create_folder WorkDocs`
+   • `/create_folder PersonalFiles`
+
+📍 *Location:* `/storage/emulated/0/YourFolderName`
+
+⚠️ *Note:* Folder name should not contain special characters
+        """
+        
+        keyboard = [
+            [InlineKeyboardButton("📝 Back to Options", callback_data="add_manual_path")],
+            [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            instruction_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+
+    @staticmethod
+    async def add_existing_folder_instruction(query):
+        """📁 Add existing folder instruction"""
+        await query.answer("📁 Add existing folder")
+        
+        instruction_text = """
+📁 *ADD EXISTING FOLDER*
+
+🎯 *How it works:*
+   • Provide full folder path
+   • System validates path exists
+   • Added to monitoring if valid
+
+💡 *Command format:*
+   `/add_existing FolderName /full/path/to/folder`
+
+📋 *Examples:*
+   • `/add_existing MyMusic /storage/emulated/0/Music`
+   • `/add_existing WorkFiles /storage/emulated/0/Documents/Work`
+   • `/add_existing AppData /storage/emulated/0/Android/data`
+
+🔍 *Tip:* Use file manager to find exact path
+        """
+        
+        keyboard = [
+            [InlineKeyboardButton("📝 Back to Options", callback_data="add_manual_path")],
+            [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            instruction_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+
+    @staticmethod
+    async def manual_command_instruction(query):
+        """📋 Manual command instruction (original method)"""
+        await query.answer("📋 Manual command")
+        
+        instruction_text = """
+📋 *MANUAL COMMAND*
+
+🎯 *For advanced users:*
 
 💡 *Use command format:*
    `/add_folder FolderName /path/to/folder`
@@ -238,7 +352,7 @@ Choose from common Android folders below, or use manual path if needed.
         """
         
         keyboard = [
-            [InlineKeyboardButton("📂 Popular Folders", callback_data="add_custom_path")],
+            [InlineKeyboardButton("📝 Back to Options", callback_data="add_manual_path")],
             [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)

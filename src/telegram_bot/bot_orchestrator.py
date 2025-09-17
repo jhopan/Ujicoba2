@@ -42,6 +42,8 @@ class TermuxTelegramBot:
         app.add_handler(CommandHandler("help", self.help_command))
         app.add_handler(CommandHandler("status", self.status_command))
         app.add_handler(CommandHandler("add_folder", self.add_folder_command))
+        app.add_handler(CommandHandler("create_folder", self.create_folder_command))
+        app.add_handler(CommandHandler("add_existing", self.add_existing_command))
         
         # Main navigation callback handlers
         app.add_handler(CallbackQueryHandler(self.main_menu_callback, pattern="^back_to_main$"))
@@ -89,6 +91,11 @@ class TermuxTelegramBot:
         app.add_handler(CallbackQueryHandler(self.add_folder_backups_callback, pattern="^add_folder_backups$"))
         app.add_handler(CallbackQueryHandler(self.add_folder_screenshots_callback, pattern="^add_folder_screenshots$"))
         app.add_handler(CallbackQueryHandler(self.add_manual_path_callback, pattern="^add_manual_path$"))
+        
+        # Advanced manual path handlers
+        app.add_handler(CallbackQueryHandler(self.create_new_folder_callback, pattern="^create_new_folder$"))
+        app.add_handler(CallbackQueryHandler(self.add_existing_folder_callback, pattern="^add_existing_folder$"))
+        app.add_handler(CallbackQueryHandler(self.manual_command_callback, pattern="^manual_command$"))
         
         # Dynamic folder removal handler
         app.add_handler(CallbackQueryHandler(self.remove_specific_folder_callback, pattern="^remove_folder_"))
@@ -157,6 +164,234 @@ class TermuxTelegramBot:
                 f"✅ *Folder Added*\n\n"
                 f"📁 *Name:* {name}\n"
                 f"📂 *Path:* `{path}`\n\n"
+                f"💡 Use /menu to manage all folders",
+                parse_mode='Markdown'
+            )
+        except Exception as e:
+            await update.message.reply_text(
+                f"❌ *Error adding folder:*\n`{str(e)}`",
+                parse_mode='Markdown'
+            )
+
+    async def create_folder_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /create_folder command"""
+        if not context.args:
+            await update.message.reply_text(
+                "🆕 *Create New Folder*\n\n"
+                "🎯 Usage: `/create_folder [folder_name]`\n\n"
+                "📋 Examples:\n"
+                "• `/create_folder MyProject`\n"
+                "• `/create_folder WorkDocs`\n"
+                "• `/create_folder PersonalFiles`\n\n"
+                "📍 *Location:* `/storage/emulated/0/YourFolderName`",
+                parse_mode='Markdown'
+            )
+            return
+
+        folder_name = context.args[0]
+        
+        # Validate folder name
+        if not folder_name.replace('_', '').replace('-', '').isalnum():
+            await update.message.reply_text(
+                "❌ *Invalid folder name*\n\n"
+                "📝 *Requirements:*\n"
+                "• Only letters, numbers, underscore, hyphen\n"
+                "• No spaces or special characters\n\n"
+                "💡 Try: `MyFolder`, `work_docs`, `project-2024`",
+                parse_mode='Markdown'
+            )
+            return
+
+        # Create folder path
+        import os
+        folder_path = f"/storage/emulated/0/{folder_name}"
+        
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(folder_path, exist_ok=True)
+            
+            # Add to config
+            config_manager.save_folder_config(folder_name, folder_path)
+            
+            await update.message.reply_text(
+                f"✅ *Folder Created & Added*\n\n"
+                f"📁 *Name:* {folder_name}\n"
+                f"📂 *Path:* `{folder_path}`\n"
+                f"📍 *Status:* Created and monitoring active\n\n"
+                f"💡 Use /menu to manage all folders",
+                parse_mode='Markdown'
+            )
+        except Exception as e:
+            await update.message.reply_text(
+                f"❌ *Error creating folder:*\n`{str(e)}`",
+                parse_mode='Markdown'
+            )
+
+    async def add_existing_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /add_existing command"""
+        if len(context.args) < 2:
+            await update.message.reply_text(
+                "📁 *Add Existing Folder*\n\n"
+                "🎯 Usage: `/add_existing [name] [path]`\n\n"
+                "📋 Examples:\n"
+                "• `/add_existing MyMusic /storage/emulated/0/Music`\n"
+                "• `/add_existing WorkFiles /storage/emulated/0/Documents/Work`\n"
+                "• `/add_existing AppData /storage/emulated/0/Android/data`\n\n"
+                "🔍 *Tip:* Use file manager to find exact path",
+                parse_mode='Markdown'
+            )
+            return
+
+        folder_name = context.args[0]
+        folder_path = context.args[1]
+        
+        import os
+        
+        # Validate path exists
+        if not os.path.exists(folder_path):
+            await update.message.reply_text(
+                f"❌ *Path not found*\n\n"
+                f"📂 *Path:* `{folder_path}`\n\n"
+                "🔍 *Please check:*\n"
+                "• Path spelling is correct\n"
+                "• Folder actually exists\n"
+                "• You have access permissions\n\n"
+                "💡 Use file manager to verify path",
+                parse_mode='Markdown'
+            )
+            return
+        
+        # Validate it's a directory
+        if not os.path.isdir(folder_path):
+            await update.message.reply_text(
+                f"❌ *Not a folder*\n\n"
+                f"📂 *Path:* `{folder_path}`\n\n"
+                "⚠️ *This path points to a file, not a folder*\n\n"
+                "💡 Please provide a folder path",
+                parse_mode='Markdown'
+            )
+            return
+
+        try:
+            # Add to config
+            config_manager.save_folder_config(folder_name, folder_path)
+            
+            await update.message.reply_text(
+                f"✅ *Existing Folder Added*\n\n"
+                f"📁 *Name:* {folder_name}\n"
+                f"📂 *Path:* `{folder_path}`\n"
+                f"📍 *Status:* Monitoring active\n\n"
+                f"💡 Use /menu to manage all folders",
+                parse_mode='Markdown'
+            )
+        except Exception as e:
+            await update.message.reply_text(
+                f"❌ *Error adding folder:*\n`{str(e)}`",
+                parse_mode='Markdown'
+            )
+    
+    async def create_folder_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /create_folder command - creates new folder and adds to monitoring"""
+        if not context.args:
+            await update.message.reply_text(
+                "🆕 *Create New Folder*\n\n"
+                "🎯 Usage: `/create_folder [folder_name]`\n\n"
+                "📋 Examples:\n"
+                "• `/create_folder MyProject`\n"
+                "• `/create_folder WorkDocs`\n"
+                "• `/create_folder PersonalFiles`\n\n"
+                "📍 *Location:* `/storage/emulated/0/YourFolderName`",
+                parse_mode='Markdown'
+            )
+            return
+        
+        folder_name = context.args[0]
+        
+        # Validate folder name
+        if any(char in folder_name for char in ['/', '\\', ':', '*', '?', '"', '<', '>', '|']):
+            await update.message.reply_text(
+                "❌ *Invalid folder name*\n\n"
+                "⚠️ Folder name cannot contain: / \\ : * ? \" < > |\n\n"
+                "💡 Try a simpler name like 'MyFolder' or 'WorkFiles'",
+                parse_mode='Markdown'
+            )
+            return
+        
+        # Create folder path
+        base_path = "/storage/emulated/0"
+        folder_path = f"{base_path}/{folder_name}"
+        
+        try:
+            import os
+            os.makedirs(folder_path, exist_ok=True)
+            
+            # Add to configuration
+            config_manager.save_folder_config(folder_name, folder_path)
+            
+            await update.message.reply_text(
+                f"🎉 *Folder Created & Added*\n\n"
+                f"📁 *Name:* {folder_name}\n"
+                f"📂 *Path:* `{folder_path}`\n\n"
+                f"✅ Folder created successfully\n"
+                f"✅ Added to monitoring\n\n"
+                f"💡 Use /menu to manage all folders",
+                parse_mode='Markdown'
+            )
+        except Exception as e:
+            await update.message.reply_text(
+                f"❌ *Error creating folder:*\n`{str(e)}`",
+                parse_mode='Markdown'
+            )
+    
+    async def add_existing_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /add_existing command - adds existing folder to monitoring"""
+        if not context.args or len(context.args) < 2:
+            await update.message.reply_text(
+                "📁 *Add Existing Folder*\n\n"
+                "🎯 Usage: `/add_existing [name] [path]`\n\n"
+                "📋 Examples:\n"
+                "• `/add_existing MyMusic /storage/emulated/0/Music`\n"
+                "• `/add_existing WorkFiles /storage/emulated/0/Documents/Work`\n"
+                "• `/add_existing AppData /storage/emulated/0/Android/data`\n\n"
+                "🔍 *Tip:* Use file manager to find exact path",
+                parse_mode='Markdown'
+            )
+            return
+        
+        folder_name = context.args[0]
+        folder_path = context.args[1]
+        
+        try:
+            import os
+            if not os.path.exists(folder_path):
+                await update.message.reply_text(
+                    f"❌ *Folder Not Found*\n\n"
+                    f"📂 Path: `{folder_path}`\n\n"
+                    f"⚠️ The specified path doesn't exist\n"
+                    f"🔍 Please check the path and try again",
+                    parse_mode='Markdown'
+                )
+                return
+            
+            if not os.path.isdir(folder_path):
+                await update.message.reply_text(
+                    f"❌ *Not a Directory*\n\n"
+                    f"📂 Path: `{folder_path}`\n\n"
+                    f"⚠️ The specified path is not a folder\n"
+                    f"🔍 Please provide a valid folder path",
+                    parse_mode='Markdown'
+                )
+                return
+            
+            # Add to configuration
+            config_manager.save_folder_config(folder_name, folder_path)
+            
+            await update.message.reply_text(
+                f"✅ *Existing Folder Added*\n\n"
+                f"📁 *Name:* {folder_name}\n"
+                f"📂 *Path:* `{folder_path}`\n\n"
+                f"✅ Path validated successfully\n"
+                f"✅ Added to monitoring\n\n"
                 f"💡 Use /menu to manage all folders",
                 parse_mode='Markdown'
             )
@@ -305,6 +540,18 @@ class TermuxTelegramBot:
     async def add_manual_path_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for manual path callback"""
         await FolderHandler.add_manual_path(update.callback_query)
+    
+    async def create_new_folder_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for create new folder callback"""
+        await FolderHandler.create_new_folder_instruction(update.callback_query)
+    
+    async def add_existing_folder_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add existing folder callback"""
+        await FolderHandler.add_existing_folder_instruction(update.callback_query)
+    
+    async def manual_command_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for manual command callback"""
+        await FolderHandler.manual_command_instruction(update.callback_query)
     
     def create_application(self):
         """Create and configure the bot application"""

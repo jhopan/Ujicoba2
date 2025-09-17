@@ -135,6 +135,21 @@ class FolderHandler:
     async def add_manual_path(query):
         """📝 Manual path entry (original method)"""
         await FolderManagementHandler.add_manual_path(query)
+    
+    @staticmethod
+    async def create_new_folder_instruction(query):
+        """🆕 Create new folder instruction"""
+        await FolderManagementHandler.create_new_folder_instruction(query)
+    
+    @staticmethod
+    async def add_existing_folder_instruction(query):
+        """📁 Add existing folder instruction"""
+        await FolderManagementHandler.add_existing_folder_instruction(query)
+    
+    @staticmethod
+    async def manual_command_instruction(query):
+        """📋 Manual command instruction"""
+        await FolderManagementHandler.manual_command_instruction(query)
 
 # Export main class
 __all__ = ['FolderHandler']
