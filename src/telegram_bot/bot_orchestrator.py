@@ -72,6 +72,31 @@ class TermuxTelegramBot:
         # Account management handlers
         app.add_handler(CallbackQueryHandler(self.manage_accounts_callback, pattern="^manage_accounts$"))
         
+        # Google Drive handlers - Setup & Guide
+        app.add_handler(CallbackQueryHandler(self.show_setup_guide_callback, pattern="^show_setup_guide$"))
+        app.add_handler(CallbackQueryHandler(self.show_quick_setup_callback, pattern="^show_quick_setup$"))
+        app.add_handler(CallbackQueryHandler(self.setup_help_callback, pattern="^setup_help$"))
+        app.add_handler(CallbackQueryHandler(self.setup_troubleshooting_callback, pattern="^setup_troubleshooting$"))
+        app.add_handler(CallbackQueryHandler(self.mobile_setup_guide_callback, pattern="^mobile_setup_guide$"))
+        
+        # Google Drive handlers - Account Management
+        app.add_handler(CallbackQueryHandler(self.add_new_account_callback, pattern="^add_new_account$"))
+        app.add_handler(CallbackQueryHandler(self.view_usage_callback, pattern="^view_usage$"))
+        app.add_handler(CallbackQueryHandler(self.manage_account_list_callback, pattern="^manage_account_list$"))
+        app.add_handler(CallbackQueryHandler(self.remove_account_callback, pattern="^remove_account$"))
+        app.add_handler(CallbackQueryHandler(self.remove_specific_account_callback, pattern="^remove_account_"))
+        app.add_handler(CallbackQueryHandler(self.switch_account_callback, pattern="^switch_account_"))
+        
+        # Google Drive handlers - File Operations  
+        app.add_handler(CallbackQueryHandler(self.show_drive_operations_callback, pattern="^show_drive_operations$"))
+        app.add_handler(CallbackQueryHandler(self.upload_files_callback, pattern="^upload_files$"))
+        app.add_handler(CallbackQueryHandler(self.download_files_callback, pattern="^download_files$"))
+        app.add_handler(CallbackQueryHandler(self.list_drive_files_callback, pattern="^list_drive_files$"))
+        app.add_handler(CallbackQueryHandler(self.backup_folders_callback, pattern="^backup_folders$"))
+        app.add_handler(CallbackQueryHandler(self.manage_drive_storage_callback, pattern="^manage_drive_storage$"))
+        app.add_handler(CallbackQueryHandler(self.search_drive_files_callback, pattern="^search_drive_files$"))
+        app.add_handler(CallbackQueryHandler(self.backup_progress_callback, pattern="^backup_progress$"))
+        
         # Settings handlers
         app.add_handler(CallbackQueryHandler(self.auto_delete_settings_callback, pattern="^auto_delete_settings$"))
         app.add_handler(CallbackQueryHandler(self.system_status_callback, pattern="^system_status$"))
@@ -552,6 +577,88 @@ class TermuxTelegramBot:
     async def manual_command_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for manual command callback"""
         await FolderHandler.manual_command_instruction(update.callback_query)
+    
+    # ========== GOOGLE DRIVE CALLBACK HANDLERS ==========
+    # Setup & Guide Callbacks
+    async def show_setup_guide_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for setup guide callback"""
+        await GoogleDriveHandler.show_setup_guide(update.callback_query)
+    
+    async def show_quick_setup_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for quick setup callback"""
+        await GoogleDriveHandler.show_quick_setup(update.callback_query)
+    
+    async def setup_help_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for setup help callback"""
+        await GoogleDriveHandler.setup_help(update.callback_query)
+    
+    async def setup_troubleshooting_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for setup troubleshooting callback"""
+        await GoogleDriveHandler.setup_troubleshooting(update.callback_query)
+    
+    async def mobile_setup_guide_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for mobile setup guide callback"""
+        await GoogleDriveHandler.mobile_setup_guide(update.callback_query)
+    
+    # Account Management Callbacks
+    async def add_new_account_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add new account callback"""
+        await GoogleDriveHandler.add_new_account(update.callback_query)
+    
+    async def view_usage_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for view usage callback"""
+        await GoogleDriveHandler.view_account_usage(update.callback_query)
+    
+    async def manage_account_list_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for manage account list callback"""
+        await GoogleDriveHandler.manage_account_list(update.callback_query)
+    
+    async def remove_account_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for remove account callback"""
+        await GoogleDriveHandler.remove_account_menu(update.callback_query)
+    
+    async def remove_specific_account_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for remove specific account callback"""
+        account_id = update.callback_query.data
+        await GoogleDriveHandler.remove_specific_account(update.callback_query, account_id)
+    
+    async def switch_account_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for switch account callback"""
+        account_id = update.callback_query.data
+        await GoogleDriveHandler.switch_account(update.callback_query, account_id)
+    
+    # File Operations Callbacks
+    async def show_drive_operations_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for show drive operations callback"""
+        await GoogleDriveHandler.show_drive_operations(update.callback_query)
+    
+    async def upload_files_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for upload files callback"""
+        await GoogleDriveHandler.upload_files(update.callback_query)
+    
+    async def download_files_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for download files callback"""
+        await GoogleDriveHandler.download_files(update.callback_query)
+    
+    async def list_drive_files_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for list drive files callback"""
+        await GoogleDriveHandler.list_drive_files(update.callback_query)
+    
+    async def backup_folders_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for backup folders callback"""
+        await GoogleDriveHandler.backup_folders(update.callback_query)
+    
+    async def manage_drive_storage_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for manage drive storage callback"""
+        await GoogleDriveHandler.manage_drive_storage(update.callback_query)
+    
+    async def search_drive_files_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for search drive files callback"""
+        await GoogleDriveHandler.search_drive_files(update.callback_query)
+    
+    async def backup_progress_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for backup progress callback"""
+        await GoogleDriveHandler.backup_progress(update.callback_query)
     
     def create_application(self):
         """Create and configure the bot application"""
