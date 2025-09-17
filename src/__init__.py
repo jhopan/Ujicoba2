@@ -6,6 +6,7 @@ Sistem backup canggih untuk Android/Termux dengan kontrol Telegram Bot
 
 __version__ = "1.0.0"
 __author__ = "Backup System Team" 
+
 __description__ = "Advanced backup system with Telegram bot control for Android/Termux"
 
 # Import main modules yang tersedia
