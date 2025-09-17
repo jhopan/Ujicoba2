@@ -57,6 +57,7 @@ class TermuxTelegramBot:
         app.add_handler(CallbackQueryHandler(self.add_documents_callback, pattern="^add_documents$"))
         app.add_handler(CallbackQueryHandler(self.add_whatsapp_callback, pattern="^add_whatsapp$"))
         app.add_handler(CallbackQueryHandler(self.add_dcim_callback, pattern="^add_dcim$"))
+        app.add_handler(CallbackQueryHandler(self.add_custom_path_callback, pattern="^add_custom_path$"))
         app.add_handler(CallbackQueryHandler(self.view_all_folders_callback, pattern="^view_all_folders$"))
         app.add_handler(CallbackQueryHandler(self.remove_folder_callback, pattern="^remove_folder$"))
         
@@ -78,6 +79,9 @@ class TermuxTelegramBot:
         
         # Help handlers
         app.add_handler(CallbackQueryHandler(self.help_menu_callback, pattern="^help_menu$"))
+        
+        # Dynamic folder removal handler
+        app.add_handler(CallbackQueryHandler(self.remove_specific_folder_callback, pattern="^remove_folder_"))
         
         # Default callback handler for unmatched patterns
         app.add_handler(CallbackQueryHandler(self.handle_unknown_callback))
@@ -152,8 +156,9 @@ class TermuxTelegramBot:
                 parse_mode='Markdown'
             )
     
-    async def handle_unknown_callback(self, query):
+    async def handle_unknown_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Handle unknown callback queries"""
+        query = update.callback_query
         await query.answer("🤔 Demo feature. Try main menu options...")
         await MainMenuHandler.show_main_menu(query)
     
@@ -203,14 +208,24 @@ class TermuxTelegramBot:
         """Wrapper for add dcim callback"""
         await FolderHandler.add_dcim_folder(update.callback_query)
     
+    async def add_custom_path_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for add custom path callback"""
+        await FolderHandler.add_custom_path(update.callback_query)
+    
     async def view_all_folders_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for view all folders callback"""
         await FolderHandler.view_all_folders(update.callback_query)
     
     async def remove_folder_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Wrapper for remove folder callback - placeholder"""
-        await update.callback_query.answer("🚧 Remove folder feature coming soon!")
-        await self.manage_folders_callback(update, context)
+        """Wrapper for remove folder callback"""
+        await FolderHandler.remove_folder(update.callback_query)
+    
+    async def remove_specific_folder_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for removing specific folder"""
+        callback_data = update.callback_query.data
+        # Extract folder name from callback_data "remove_folder_{folder_name}"
+        folder_name = callback_data.replace("remove_folder_", "", 1)
+        await FolderHandler.remove_specific_folder(update.callback_query, folder_name)
     
     async def quick_backup_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for quick backup callback"""

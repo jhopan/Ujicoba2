@@ -128,6 +128,29 @@ class ConfigManager:
         except:
             return []
     
+    def remove_folder_config(self, folder_name: str) -> bool:
+        """🗑️ Remove folder configuration"""
+        folders_file = self.config_dir / "folders.json"
+        if not folders_file.exists():
+            return False
+        
+        try:
+            loaded_data = json.loads(folders_file.read_text())
+            if isinstance(loaded_data, list):
+                folders = [f for f in loaded_data if isinstance(f, dict)]
+                
+                # Remove folder by name
+                original_count = len(folders)
+                folders = [f for f in folders if f.get('name') != folder_name]
+                
+                if len(folders) < original_count:
+                    # Save updated list
+                    folders_file.write_text(json.dumps(folders, indent=2))
+                    return True
+            return False
+        except:
+            return False
+    
     def save_credentials(self, credentials_data: dict, account_number: int) -> Path:
         """💾 Save Google Drive credentials"""
         filename = f"account{account_number}_credentials.json"

@@ -305,3 +305,125 @@ class FolderHandler:
             parse_mode=ParseMode.MARKDOWN,
             reply_markup=reply_markup
         )
+    
+    @staticmethod
+    async def remove_folder(query):
+        """🗑️ Remove folder from monitoring"""
+        folders = config_manager.get_folders()
+        
+        if not folders:
+            await query.answer("❌ No folders to remove")
+            
+            remove_text = """
+🗑️ *REMOVE FOLDER*
+
+⚠️ *No folders configured*
+
+🎯 *To remove folders:*
+• First add some folders
+• Then use this option to remove them
+• Folders will be removed from monitoring only
+
+💡 *Files on your device won't be deleted*
+            """
+            
+            keyboard = [
+                [InlineKeyboardButton("📁 Add Folders", callback_data="manage_folders")],
+                [InlineKeyboardButton("🔙 Back", callback_data="manage_folders")]
+            ]
+            
+        else:
+            await query.answer("🗑️ Select folder to remove")
+            
+            remove_text = """
+🗑️ *REMOVE FOLDER FROM MONITORING*
+
+⚠️ *Select folder to remove:*
+
+📋 *Current monitored folders:*
+            """
+            
+            keyboard = []
+            for i, folder in enumerate(folders, 1):
+                status = "✅" if folder.get('active', True) else "❌"
+                remove_text += f"\n*{i}. {folder['name']}* {status}"
+                # Add button to remove this specific folder
+                keyboard.append([InlineKeyboardButton(
+                    f"🗑️ Remove {folder['name']}", 
+                    callback_data=f"remove_folder_{folder['name']}"
+                )])
+            
+            remove_text += "\n\n💡 *Files on device won't be deleted, only removed from backup monitoring*"
+            
+            keyboard.extend([
+                [InlineKeyboardButton("📁 Back to Folders", callback_data="manage_folders")],
+                [InlineKeyboardButton("🔙 Main Menu", callback_data="back_to_main")]
+            ])
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            remove_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
+    
+    @staticmethod
+    async def remove_specific_folder(query, folder_name: str):
+        """🗑️ Remove specific folder"""
+        success = config_manager.remove_folder_config(folder_name)
+        
+        if success:
+            await query.answer(f"✅ {folder_name} removed from monitoring")
+            
+            success_text = f"""
+✅ *FOLDER REMOVED*
+
+🗑️ *Removed:* {folder_name}
+📊 *Status:* No longer monitored
+
+🎯 *What happened:*
+• Folder removed from backup list
+• Files on device are safe
+• No longer included in backups
+• Can be re-added anytime
+
+💡 *Use "Add Folders" to monitor it again*
+            """
+            
+            keyboard = [
+                [InlineKeyboardButton("📁 Add Folders", callback_data="manage_folders")],
+                [InlineKeyboardButton("🗑️ Remove More", callback_data="remove_folder")],
+                [InlineKeyboardButton("🔙 Main Menu", callback_data="back_to_main")]
+            ]
+            
+        else:
+            await query.answer(f"❌ Failed to remove {folder_name}")
+            
+            success_text = f"""
+❌ *FAILED TO REMOVE FOLDER*
+
+🗑️ *Folder:* {folder_name}
+📊 *Error:* Could not remove from configuration
+
+🔧 *Try again or check:*
+• Folder might already be removed
+• Configuration file issues
+• Use /menu to refresh
+
+💡 *Contact support if problem persists*
+            """
+            
+            keyboard = [
+                [InlineKeyboardButton("🔄 Try Again", callback_data="remove_folder")],
+                [InlineKeyboardButton("📁 View Folders", callback_data="view_all_folders")],
+                [InlineKeyboardButton("🔙 Main Menu", callback_data="back_to_main")]
+            ]
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await query.edit_message_text(
+            success_text,
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=reply_markup
+        )
