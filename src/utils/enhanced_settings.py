@@ -4,11 +4,16 @@ Enhanced Settings Manager for configuration and preferences
 
 import os
 import json
-import yaml
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional, List
 import logging
+
+try:
+    import yaml
+    YAML_AVAILABLE = True
+except ImportError:
+    YAML_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -151,7 +156,11 @@ class EnhancedSettings:
         try:
             if self.backup_rules_file.exists():
                 with open(self.backup_rules_file, 'r') as f:
-                    rules = yaml.safe_load(f) or {}
+                    if YAML_AVAILABLE:
+                        rules = yaml.safe_load(f) or {}
+                    else:
+                        # Fallback to JSON format if yaml not available
+                        rules = json.load(f) or {}
                 logger.info("Backup rules loaded successfully")
                 return rules
             else:
@@ -185,7 +194,11 @@ class EnhancedSettings:
                 rules = self.backup_rules
             
             with open(self.backup_rules_file, 'w') as f:
-                yaml.dump(rules, f, default_flow_style=False, indent=2)
+                if YAML_AVAILABLE:
+                    yaml.dump(rules, f, default_flow_style=False, indent=2)
+                else:
+                    # Fallback to JSON format if yaml not available
+                    json.dump(rules, f, indent=2)
             
             self.backup_rules = rules
             logger.info("Backup rules saved successfully")
