@@ -49,21 +49,27 @@ class TermuxTelegramBot:
         # Google Drive handlers (hanya yang ada)
         app.add_handler(CallbackQueryHandler(self.setup_drive_callback, pattern="^setup_drive$"))
         
-        # Folder management handlers (hanya yang ada)
-        app.add_handler(CallbackQueryHandler(FolderHandler.manage_folders_menu, pattern="^manage_folders$"))
+        # Folder management handlers
+        app.add_handler(CallbackQueryHandler(self.manage_folders_callback, pattern="^manage_folders$"))
         
-        # Backup operation handlers (hanya yang ada)
-        app.add_handler(CallbackQueryHandler(BackupHandler.manual_backup_menu, pattern="^quick_backup$"))
-        app.add_handler(CallbackQueryHandler(BackupHandler.schedule_backup_menu, pattern="^schedule_backup$"))
+        # Backup operation handlers
+        app.add_handler(CallbackQueryHandler(self.quick_backup_callback, pattern="^quick_backup$"))
+        app.add_handler(CallbackQueryHandler(self.schedule_backup_callback, pattern="^schedule_backup$"))
+        app.add_handler(CallbackQueryHandler(self.manual_backup_callback, pattern="^manual_backup$"))
+        app.add_handler(CallbackQueryHandler(self.stop_backup_callback, pattern="^stop_backup$"))
         
-        # Settings handlers (hanya yang ada)
-        app.add_handler(CallbackQueryHandler(SettingsHandler.settings_menu, pattern="^show_settings$"))
+        # Account management handlers
+        app.add_handler(CallbackQueryHandler(self.manage_accounts_callback, pattern="^manage_accounts$"))
         
-        # Logs handlers (hanya yang ada) 
-        app.add_handler(CallbackQueryHandler(LogsHandler.logs_menu, pattern="^show_logs$"))
+        # Settings handlers
+        app.add_handler(CallbackQueryHandler(self.auto_delete_settings_callback, pattern="^auto_delete_settings$"))
+        app.add_handler(CallbackQueryHandler(self.system_status_callback, pattern="^system_status$"))
         
-        # Help handlers (hanya yang ada)
-        app.add_handler(CallbackQueryHandler(HelpHandler.help_menu, pattern="^show_help$"))
+        # Logs handlers
+        app.add_handler(CallbackQueryHandler(self.view_logs_callback, pattern="^view_logs$"))
+        
+        # Help handlers
+        app.add_handler(CallbackQueryHandler(self.help_menu_callback, pattern="^help_menu$"))
         
         # Default callback handler for unmatched patterns
         app.add_handler(CallbackQueryHandler(self.handle_unknown_callback))
@@ -125,7 +131,47 @@ class TermuxTelegramBot:
     
     async def setup_drive_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Wrapper for setup drive callback"""
-        await GoogleDriveHandler.setup_drive_menu(update, context)
+        await GoogleDriveHandler.setup_drive_menu(update.callback_query)
+    
+    async def manage_folders_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for manage folders callback"""
+        await FolderHandler.manage_folders_menu(update.callback_query)
+    
+    async def quick_backup_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for quick backup callback"""
+        await BackupHandler.do_quick_backup(update.callback_query)
+    
+    async def schedule_backup_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for schedule backup callback"""
+        await BackupHandler.schedule_backup_menu(update.callback_query)
+    
+    async def manual_backup_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for manual backup callback"""
+        await BackupHandler.manual_backup_menu(update.callback_query)
+    
+    async def stop_backup_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for stop backup callback"""
+        await BackupHandler.stop_backup(update.callback_query)
+    
+    async def manage_accounts_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for manage accounts callback"""
+        await GoogleDriveHandler.manage_accounts(update.callback_query)
+    
+    async def auto_delete_settings_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for auto delete settings callback"""
+        await SettingsHandler.settings_menu(update.callback_query)
+    
+    async def system_status_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for system status callback"""
+        await SettingsHandler.settings_menu(update.callback_query)
+    
+    async def view_logs_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for view logs callback"""
+        await LogsHandler.logs_menu(update.callback_query)
+    
+    async def help_menu_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Wrapper for help menu callback"""
+        await HelpHandler.help_menu(update.callback_query)
     
     def create_application(self):
         """Create and configure the bot application"""
