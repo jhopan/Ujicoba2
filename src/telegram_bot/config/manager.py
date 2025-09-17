@@ -21,9 +21,22 @@ class ConfigManager:
         self.credentials_dir = PROJECT_ROOT / "credentials"
         self.env_file = PROJECT_ROOT / ".env"
         
+        # Load .env file
+        self._load_env_file()
+        
         # Ensure directories exist
         self.config_dir.mkdir(exist_ok=True)
         self.credentials_dir.mkdir(exist_ok=True)
+    
+    def _load_env_file(self):
+        """Load .env file manually if dotenv is not available"""
+        if self.env_file.exists():
+            with open(self.env_file, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        os.environ[key.strip()] = value.strip()
     
     def get_setting(self, key: str, default: str = '') -> str:
         """📖 Get setting value from environment"""
